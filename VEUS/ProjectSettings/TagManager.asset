@@ -41,3 +41,18 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: suelo
+    uniqueID: 1331818583
+    locked: 0
+  - name: lineas
+    uniqueID: 2872273577
+    locked: 0
+  - name: edificios
+    uniqueID: 1666149489
+    locked: 0
+  - name: detalles_edificios
+    uniqueID: 642449185
+    locked: 0
+  - name: personajes
+    uniqueID: 1000896687
+    locked: 0
