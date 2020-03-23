@@ -56,3 +56,6 @@ TagManager:
   - name: personajes
     uniqueID: 1000896687
     locked: 0
+  - name: detalles_suelo
+    uniqueID: 2964677899
+    locked: 0
