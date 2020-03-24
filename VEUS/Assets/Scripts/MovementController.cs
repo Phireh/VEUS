@@ -31,6 +31,7 @@ public class MovementController : MonoBehaviour
     void Update()
     {
         UpdateState();
+        //UpdateStateMouse();
     }
     private void UpdateState()
     {
@@ -53,17 +54,40 @@ public class MovementController : MonoBehaviour
         }
         animator.SetInteger("AnimationState", (int)state);
         spriteRenderer.flipX = (state == CharStates.walkWest);
+    }
+
+    private void UpdateStateMouse()
+    {
+        CharStates state = CharStates.idleSouth;
+        if (target.x > 0)
+        {
+            state = CharStates.walkEast;
+        }
+        else if (target.x < 0)
+        {
+            state = CharStates.walkWest;
+        }
+        else if (target.y > 0)
+        {
+            state = CharStates.walkNorth;
+        }
+        else if (target.y < 0)
+        {
+            state = CharStates.walkSouth;
+        }
+        animator.SetInteger("AnimationState", (int)state);
+        spriteRenderer.flipX = (state == CharStates.walkWest);
     }
 
     private void FixedUpdate()
     {
         //Movimiento ratón
-        if (Input.GetMouseButtonDown(0))
-        {
-            target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            target.z = 0f;
-        }
-        transform.position = Vector3.MoveTowards(transform.position, target, movementSpeed * Time.deltaTime);
+        //if (Input.GetMouseButtonDown(0))
+        //{
+        //    target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        //    target.z = 0f;
+        //}
+        //transform.position = Vector3.MoveTowards(transform.position, target, movementSpeed * Time.deltaTime);
 
         //Movimiento teclas
         movement.x = Input.GetAxisRaw("Horizontal");
