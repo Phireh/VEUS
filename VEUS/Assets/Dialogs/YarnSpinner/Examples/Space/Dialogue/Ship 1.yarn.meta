@@ -1,0 +1,36 @@
+fileFormatVersion: 2
+guid: 97628c0c7dd898d40920f45357add842
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 94073015eacc34c1d8fc6786e43d60ca, type: 3}
+  baseLanguageID: es-ES
+  stringIDs:
+  - line:5837f2
+  - line:ship9
+  - line:ship10
+  - line:ship11
+  - line:ship12
+  - line:ship13
+  - line:ship1
+  - line:ship3
+  - line:ship4
+  - line:ship5
+  - line:ship6
+  - line:ship7
+  - Ship 1-Ship-0
+  - Ship 1-Ship-1
+  - Ship 1-Ship-2
+  - Ship 1-Ship-3
+  - Ship 1-Ship-4
+  - Ship 1-Ship-5
+  compilationStatus: 1
+  isSuccesfullyCompiled: 1
+  compilationErrorMessage: 
+  baseLanguage: {fileID: 7128917941130120860, guid: 97628c0c7dd898d40920f45357add842,
+    type: 3}
+  localizations: []
