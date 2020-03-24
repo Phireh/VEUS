@@ -15,12 +15,14 @@ public class MovementController : MonoBehaviour
 
     public float movementSpeed = 3.0f;
     Vector2 movement = new Vector2();
+    Vector3 target;
     Rigidbody2D rb2d;
     Animator animator;
     SpriteRenderer spriteRenderer;
 
     void Start()
     {
+        target = transform.position;
         rb2d = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -55,6 +57,15 @@ public class MovementController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        //Movimiento ratón
+        if (Input.GetMouseButtonDown(0))
+        {
+            target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            target.z = 0f;
+        }
+        transform.position = Vector3.MoveTowards(transform.position, target, movementSpeed * Time.deltaTime);
+
+        //Movimiento teclas
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
         movement.Normalize();
