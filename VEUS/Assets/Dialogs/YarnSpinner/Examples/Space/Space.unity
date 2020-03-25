@@ -900,9 +900,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcea1ccd45a8141e594a8103eefc1fbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minPosition: -5.3
-  maxPosition: 21
-  moveSpeed: 10
   interactionRadius: 4
 --- !u!114 &924307000
 MonoBehaviour:

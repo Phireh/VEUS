@@ -19,6 +19,7 @@ public class MovementController : MonoBehaviour
     Rigidbody2D rb2d;
     Animator animator;
     SpriteRenderer spriteRenderer;
+    public float interactionRadius = 2.0f;
 
     void Start()
     {
