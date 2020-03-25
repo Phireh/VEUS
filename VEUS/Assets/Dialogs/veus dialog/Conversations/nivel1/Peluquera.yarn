@@ -1,0 +1,30 @@
+title: Peluquera
+tags: 
+colorID: 0
+position: 721,129
+---
+<<if visited("Peluquera") is false>>
+    Peluquera: ¿Quien eres y qué quieres?
+    Tú: Bu-buenas, soy el nuevo alcalde
+    Tú: Venía a presentarme 
+    Peluquera: Aaaah sí claro
+    Peluquera: Vete
+    Peluquera: a tomar
+    Peluquera: por culo
+   
+<<endif>>
+
+<<if $should_see_peluquera is true and $bromas_warning is false>>
+    Tú: El bromas me dijo que me tenías que decir algo.
+    Peluquera: Joder que pesadito estas hoy.
+    Peluquera: A ver, he escuchado que tienes una mujer y 3 niños
+    Peluquera: Me gustaría que fueseis mis mejores clientes.
+    Peluquera: Porque ya sabes, no creo que a la gente le guste las cosas que pueda decir de ti.
+    Tú: Que dices, si no sabes nada de mí.
+    Peluquera: Aquí todo el mundo se entera de las cosas por mí.
+    Peluquera: Tú decides alcaldito, mañana te pasas y pides cita para todos.
+    <<set $bromas_warning to true>>
+    <<wait 1>>
+    Tú: Ya hablaremos señorita, me marcho.
+<<endif>>
+===
