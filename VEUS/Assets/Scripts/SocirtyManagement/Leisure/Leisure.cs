@@ -46,12 +46,6 @@ public class Leisure
         get { return time; }
         set { if (value > 0) time = value; }
     }
-    Index satisfaction;
-    public Index Satisfaction
-    {
-        get { return satisfaction; }
-        set { if (value.Value > 0 && value.Value <= 1) satisfaction = value; }
-    }
 
     public Leisure()
     {
@@ -62,13 +56,12 @@ public class Leisure
         Time = 1;
     }
 
-    public Leisure(TYPE type, int opening, int closing, int cost, int time, Index satisfaction)
+    public Leisure(TYPE type, int opening, int closing, int cost, int time)
     {
         LeisureType = type;
         Opening = opening;
         Closing = closing;
         Cost = cost;
         Time = time;
-        Satisfaction = satisfaction;
     }
 }

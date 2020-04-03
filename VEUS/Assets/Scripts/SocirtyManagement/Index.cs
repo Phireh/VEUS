@@ -24,7 +24,7 @@ public class Index
     public string Name
     {
         get { return name; }
-        set { if (value.Length < 21) name = value; } // Names can be 20 characters long as much
+        set { if (value.Length < 11) name = value; }
     }
     string description;
     // Description of the index

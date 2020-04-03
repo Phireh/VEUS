@@ -48,12 +48,6 @@ public class Job
         get { return finish; }
         set { if (value >= 0 && value < 24) finish = value; }
     }
-    Index effortRequired;
-    public Index EffortRequiered
-    {
-        get { return effortRequired; }
-        set { if (value.Value > 0 && value.Value <= 1) effortRequired = value; }
-    }
 
     public Job()
     {
@@ -62,17 +56,14 @@ public class Job
         Salary = 600;
         Start = 9;
         Finish = 18;
-        EffortRequiered = new Index("Effort Requiered",
-            "Meassures the effort requiered to be an Office Worker", 0.5f);
     }
 
-    public Job(TYPE jobType, int quantity, int salary, int start, int finish, Index effortRequiered)
+    public Job(TYPE jobType, int quantity, int salary, int start, int finish)
     {
         JobType = jobType;
         Quantity = quantity;
         Salary = salary;
         Start = start;
         Finish = finish;
-        EffortRequiered = effortRequiered;
     }
 }
