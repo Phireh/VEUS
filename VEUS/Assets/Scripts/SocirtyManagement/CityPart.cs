@@ -12,13 +12,8 @@ public enum PLACE
 
 public class CityPart
 {
-
+    int residentsNum;
     PLACE location;
-    public PLACE Location
-    {
-        get { return location; }
-        set { location = value; }
-    }
     WaysOfTransport transport;
     public WaysOfTransport Transport
     {
@@ -40,15 +35,17 @@ public class CityPart
 
     public CityPart()
     {
-        Location = PLACE.CENTER;
+        residentsNum = 250;
+        location = PLACE.CENTER;
         Transport = new WaysOfTransport();
         Leisure = new LeisureVenues();
         Jobs = new WorkOffers();
     }
 
-    public CityPart(PLACE location, WaysOfTransport transport, LeisureVenues leisure, WorkOffers jobs)
+    public CityPart(int residentsNum, PLACE location, WaysOfTransport transport, LeisureVenues leisure, WorkOffers jobs)
     {
-        Location = location;
+        this.residentsNum = residentsNum;
+        this.location = location;
         Transport = transport;
         Leisure = leisure;
         Jobs = jobs;
