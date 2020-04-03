@@ -11,7 +11,8 @@ position: 721,129
     Peluquera: Vete
     Peluquera: a tomar
     Peluquera: por culo
-   
+ <<else>>   
+    Peluquera: Que te pires pesado.
 <<endif>>
 
 <<if $should_see_peluquera is true and $bromas_warning is false>>
@@ -24,7 +25,7 @@ position: 721,129
     Peluquera: Aquí todo el mundo se entera de las cosas por mí.
     Peluquera: Tú decides alcaldito, mañana te pasas y pides cita para todos.
     <<set $bromas_warning to true>>
-    <<wait 1>>
+
     Tú: Ya hablaremos señorita, me marcho.
 <<endif>>
 ===

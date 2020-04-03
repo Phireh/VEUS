@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 9a28a4c994924334cb2c47208044c311
+guid: 6a91b1c146bbf494294aabb4e5345888
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -8,7 +8,7 @@ ScriptedImporter:
   assetBundleName: 
   assetBundleVariant: 
   script: {fileID: 11500000, guid: 94073015eacc34c1d8fc6786e43d60ca, type: 3}
-  baseLanguageID: 
+  baseLanguageID: es-ES
   stringIDs:
   - Peluquera-Peluquera-0
   - Peluquera-Peluquera-1
@@ -26,8 +26,10 @@ ScriptedImporter:
   - Peluquera-Peluquera-13
   - Peluquera-Peluquera-14
   - Peluquera-Peluquera-15
+  - Peluquera-Peluquera-16
   compilationStatus: 1
   isSuccesfullyCompiled: 1
   compilationErrorMessage: 
-  baseLanguage: {instanceID: 0}
+  baseLanguage: {fileID: 7128917941130120860, guid: 6a91b1c146bbf494294aabb4e5345888,
+    type: 3}
   localizations: []

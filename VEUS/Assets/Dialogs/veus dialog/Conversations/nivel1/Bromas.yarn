@@ -7,8 +7,10 @@ position: 461,111
     Tú: Hola muchacho, le puedo ayudar en algo? 
     Bromas: Oh! Así que tú eres el nuevo alcalde. 
     Bromas: Me presento soy el bromas, una persona super amada en la ciudad. 
-    Bromas: Te vendría bien tenerme a tu lado en tus comienzos, yo te podría aconsejar je je je . 
+    Bromas: Te vendría bien tenerme a tu lado en tus comienzos, yo te podría aconsejar je je je. 
+
 <<else>>
+
     Tú: ¿Te vas a quedar todo el día en la puerta del ayuntamiento? 
     Bromas: Habla con la peluquera y después me iré
 <<endif>>
