@@ -59,3 +59,6 @@ TagManager:
   - name: detalles_suelo
     uniqueID: 2964677899
     locked: 0
+  - name: segunda_capa
+    uniqueID: 328144503
+    locked: 0
