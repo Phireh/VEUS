@@ -33,7 +33,7 @@ public class Scene_management : MonoBehaviour
                 sceneName = "newsroom";
             }
 
-            else if (gameObject.name.Equals("exitNewsroom"))
+            else if (gameObject.name.Equals("exitBarbershop"))
             {
                 level = 0;
                 sceneName = "barbershop";
@@ -60,7 +60,7 @@ public class Scene_management : MonoBehaviour
 
     public void exitScene()
     {
-        Debug.Log("loading level " + level);
+        Debug.Log("loading level " + level + " " + sceneName);
         SceneManager.LoadScene(level);
     }
 
@@ -68,14 +68,17 @@ public class Scene_management : MonoBehaviour
     {
         if (sceneName.Equals("townHall")){
             player.transform.position = new Vector3(-11f, 0f, 0f);
+            sceneName = "";
         }
         else if (sceneName.Equals("newsroom"))
         {
             player.transform.position = new Vector3(42f, 2.7f, 0f);
+            sceneName = "";
         }
         else if (sceneName.Equals("barbershop"))
         {
             player.transform.position = new Vector3(32f, 20f, 0f);
+            sceneName = "";
         }
     }
 } 
