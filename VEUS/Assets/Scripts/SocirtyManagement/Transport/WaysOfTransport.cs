@@ -4,26 +4,7 @@ using System.Collections.Generic;
 
 public class WaysOfTransport
 {
-    public enum TRANSPORT_ACCESS
-    {
-        PRIVATE = 0,
-        SEMI_PRIVATE = 1,
-        PUBLIC = 2
-    }
-    public enum TECHNOLOGY
-    {
-        OLD_FASHINED = 0,
-        UP_TO_DATE = 1,
-        CUTTING_EDGE = 2
-    }
-    public enum INVESTMENT
-    {
-        VERY_LOW = 0,
-        LOW = 1,
-        MEDIUM = 2,
-        HIGH = 3,
-        VERY_HIGH
-    }
+
     /////////////////////////
     /// Private Variables ///
     /////////////////////////
@@ -32,6 +13,8 @@ public class WaysOfTransport
     Transport cycleLane;
     Transport street;
     Transport subway;
+    Index technology;
+    Index investment;
 
     /////////////////////////
     /// Public Properties ///
@@ -57,35 +40,89 @@ public class WaysOfTransport
         get { return subway; }
         private set { subway = value; }
     }
+    public Index Investment
+    {
+        get { return investment; }
+        private set { investment = value; }
+    }
+    public Index Technology
+    {
+        get { return technology; }
+        private set { technology = value; }
+    }
 
     /////////////////////
     /// Constructors ///
     ////////////////////
 
-    public WaysOfTransport(Transport road, Transport cycleLane, Transport street, Transport subway)
+    public WaysOfTransport(float technologyValue, float investmentValue)
     {
-        SetInitialValues(road, cycleLane, street, subway);
-    }
+        technology = new Index("Tecnología", "Nivel de la tecnología empleada en los transportes", technologyValue);
+        investment = new Index("Inversión", "Nivel de inversión dirigida a los transportes", investmentValue);
 
-    public WaysOfTransport(TRANSPORT_ACCESS accesiblity, TECHNOLOGY texhnology,
-        INVESTMENT investment)
-    {
+        Transport.WEAR auxWear;
+        if (technology.GetIndexState() > Index.STATE.VERY_HIGH) auxWear = Transport.WEAR.NONE;
+        else if (technology.GetIndexState() > Index.STATE.MEDIUM) auxWear = Transport.WEAR.PARTIALLY;
+        else  auxWear = Transport.WEAR.PARTIALLY;
+        Road = new Transport(Transport.TYPE.CAR, Transport.EXPANSION.NONE, auxWear);
+        Subway = new Transport(Transport.TYPE.TRAIN, Transport.EXPANSION.NONE, auxWear);
+        CycleLane = new Transport(Transport.TYPE.BIKE, Transport.EXPANSION.NONE, auxWear);
+        Street = new Transport(Transport.TYPE.FEET, Transport.EXPANSION.NONE, auxWear);
 
+        if (technology.GetIndexState() > Index.STATE.LOW)
+            RepairOrErode(Transport.TYPE.FEET, Index.CHANGE.LOW_INCREASE);
+        if (technology.GetIndexState() > Index.STATE.MEDIUM)
+            RepairOrErode(Transport.TYPE.BIKE, Index.CHANGE.LOW_INCREASE);
+        if (technology.GetIndexState() > Index.STATE.HIGH)
+            RepairOrErode(Transport.TYPE.TRAIN, Index.CHANGE.LOW_INCREASE);
+        if (technology.GetIndexState() > Index.STATE.VERY_HIGH)
+            RepairOrErode(Transport.TYPE.CAR, Index.CHANGE.LOW_INCREASE);
+
+        Road.Wear.AddDependency(new Dependency(investment, 50, Dependency.TYPE.REVERSE_SUBSTRACTION));
+        Street.Wear.AddDependency(new Dependency(investment, 35, Dependency.TYPE.REVERSE_SUBSTRACTION));
+        Subway.Wear.AddDependency(new Dependency(investment, 65, Dependency.TYPE.REVERSE_SUBSTRACTION));
+        CycleLane.Wear.AddDependency(new Dependency(investment, 35, Dependency.TYPE.REVERSE_SUBSTRACTION));
+
+        Road.Wear.AddDependency(new Dependency(technology, 40, Dependency.TYPE.ADDITION));
+        Street.Wear.AddDependency(new Dependency(technology, 25, Dependency.TYPE.ADDITION));
+        Subway.Wear.AddDependency(new Dependency(technology, 50, Dependency.TYPE.ADDITION));
+        CycleLane.Wear.AddDependency(new Dependency(technology, 25, Dependency.TYPE.ADDITION));
+
+        Road.Safety.AddDependency(new Dependency(technology, 55, Dependency.TYPE.REVERSE_SUBSTRACTION));
+        Street.Safety.AddDependency(new Dependency(technology, 15, Dependency.TYPE.REVERSE_SUBSTRACTION));
+        Subway.Safety.AddDependency(new Dependency(technology, 55, Dependency.TYPE.REVERSE_SUBSTRACTION));
+        CycleLane.Safety.AddDependency(new Dependency(technology, 25, Dependency.TYPE.REVERSE_SUBSTRACTION));
     }
 
     ////////////////////////
     /// Auxiliar Methods ///
     ////////////////////////
 
-    void SetInitialValues(Transport road, Transport cycleLane, Transport street, Transport subway)
-    {
-        Road = road;
-        CycleLane = cycleLane;
-        Street = street;
-        Subway = subway;
-    }
+
 
     //////////////////////
     /// Public Methods ///
     //////////////////////
+   
+    public Index.STATE RepairOrErode(Transport.TYPE type, Index.CHANGE change)
+    {
+        Transport t;
+        switch (type)
+        {
+            case Transport.TYPE.FEET:
+                t = Street;
+                break;
+            case Transport.TYPE.CAR:
+                t = Road;
+                break;
+            case Transport.TYPE.TRAIN:
+                t = Subway;
+                break;
+            case Transport.TYPE.BIKE:
+            default:
+                t = CycleLane;
+                break;
+        }
+        return t.Wear.ChangeIndexValue(change);
+    }
 }

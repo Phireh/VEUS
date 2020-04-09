@@ -58,16 +58,14 @@ public class Transport
     /////////////////////////
 
     EXPANSION expansion;
-    WEAR wear;
     TYPE transportType;
+    Index wear;
     Index safety;
-    float speed;
+    Index speedIndex;
     int capacity;
     Index polluting;
     float baseCapacity;
     float baseSpeed;
-    float baseSafety;
-    float basePolluting;
 
     /////////////////////////
     /// Public Properties ///
@@ -78,7 +76,7 @@ public class Transport
         get { return expansion; }
         private set { expansion = value; }
     }
-    public WEAR Wear
+    public Index Wear
     {
         get { return wear; }
         private set { wear = value; }
@@ -98,8 +96,8 @@ public class Transport
     // Does it take too long? [> 0 (Divides the default travel time by walk)]
     public float Speed
     {
-        get { return speed; }
-        private set { if (value > 0) speed = value; }
+        get { return baseSpeed * speedIndex.Value; }
+        private set { if (value > 0) baseSpeed = value; }
     }
     // How many people can use it at the same time
     public int Capacity
@@ -107,18 +105,23 @@ public class Transport
         get { return capacity; }
         private set { if (value > 0) capacity = value; }
     }
-    
+
     // How much does the transport pollute the air and noise [Index]
     public Index Polluting
     {
         get { return polluting; }
         private set { if (value.Value > 0 && value.Value <= 1) polluting = value; }
     }
+    public Index SpeedIndex
+    {
+        get { return speedIndex; }
+        private set { if (value.Value > 0 && value.Value <= 1) speedIndex = value; }
+    }
 
     /////////////////////
     /// Constructors ///
     ////////////////////
-    
+
     /// <summary>
     /// [NOT RECOMMENDED CONSTRUCTOR] Creates a Transport with the passed values
     /// </summary>
@@ -129,9 +132,9 @@ public class Transport
     /// <param name="pollutingValue">Initial polluting level</param>
     /// <param name="expansion">Level of expansion of the transport (if it is not max it's possible to increment the capacity)</param>
     /// <param name="wear">Level of wear of the transport (if bad, it can improve | if good, it can get worse)</param>
-    public Transport(TYPE transportType, float safetyValue, int capacity, float speed, float pollutingValue, EXPANSION expansion, WEAR wear)
+    public Transport(TYPE transportType, float safetyValue, int capacity, float maxSpeed, float speedIndexValue, float pollutingValue, EXPANSION expansion, WEAR wear)
     {
-        SetInitialValues(transportType, safetyValue, capacity, speed, pollutingValue, expansion, wear);
+        SetInitialValues(transportType, safetyValue, capacity, maxSpeed, speedIndexValue, pollutingValue, expansion, wear);
     }
 
     /// <summary>
@@ -145,18 +148,19 @@ public class Transport
     {
         float safetyValue;
         int capacity;
-        float speed;
+        float maxSpeed;
         float pollutingValue;
+        float speedIndexValue = 1f;
         switch (transportType)
         {
             case TYPE.FEET:
                 capacity = baseStreetCapacity;
-                speed = baseStreetSpeed;
+                maxSpeed = baseStreetSpeed;
                 safetyValue = baseStreetSafety;
                 pollutingValue = baseSubwayPollution;
                 break;
             case TYPE.BIKE:
-                speed = baseCycleLaneSpeed;
+                maxSpeed = baseCycleLaneSpeed;
                 capacity = baseCycleLaneCapacity;
                 safetyValue = baseCycleLaneSafety;
                 pollutingValue = baseCycleLanePollution;
@@ -164,25 +168,26 @@ public class Transport
             case TYPE.CAR:
                 capacity = baseRoadCapacity;
                 safetyValue = baseCycleLaneSafety;
-                speed = baseCycleLaneSpeed;
+                maxSpeed = baseCycleLaneSpeed;
                 pollutingValue = baseCycleLanePollution;
                 break;
             case TYPE.TRAIN:
             default:
                 capacity = baseSubwayCapacity;
                 safetyValue = baseSubwaySafety;
-                speed = baseSubwaySpeed;
+                maxSpeed = baseSubwaySpeed;
                 pollutingValue = baseSubwayPollution;
                 break;
         }
-        SetInitialValues(transportType, safetyValue, capacity, speed, pollutingValue, expansion, wear);
+        SetInitialValues(transportType, safetyValue, capacity, maxSpeed, speedIndexValue, pollutingValue, expansion, wear);
     }
 
     ////////////////////////
     /// Auxiliar Methods ///
     ////////////////////////
 
-    void SetInitialValues(TYPE transportType, float safetyValue, int capacity, float speed, float pollutingValue, EXPANSION expansion, WEAR wear)
+    void SetInitialValues(TYPE transportType, float safetyValue, int capacity, float maxSpeed, float speedIndexValue,
+        float pollutingValue, EXPANSION expansion, WEAR wear)
     {
         string n;
         switch (transportType)
@@ -205,24 +210,33 @@ public class Transport
         Safety = new Index("Seguridad", "Representa como de seguro es desplazarse " + n, safetyValue);
         Polluting = new Index("Contaminante", "Representa como de contaminante es despalzarse " + n, pollutingValue);
         Expansion = EXPANSION.NONE;
-        Wear = WEAR.NONE;
         int i = 0;
-        while (i < (int) wear)
-        {
-            Erode();
-            i++;
-        }
-        i = 0;
         while (i < (int) expansion)
         {
             Expand();
             i++;
         }
-
-        this.baseSafety = safetyValue;
+        float wearValue;
+        switch (wear)
+        {
+            case WEAR.NONE:
+                wearValue = Index.rand.Next(33) / 100f;
+                break;
+            case WEAR.PARTIALLY:
+                wearValue = Index.rand.Next(34, 66) / 100f;
+                break;
+            case WEAR.COMPLEATLY:
+            default:
+                wearValue = Index.rand.Next(67, 100) / 100f;
+                break;
+        }
+        Wear = new Index("Desgaste", "Representa como de desgastado está de desplazrse " + n, wearValue); 
+        Safety.AddDependency(new Dependency(Wear, 35, Dependency.TYPE.SUBSTRACTION));
         this.baseCapacity = Capacity = capacity;
-        this.baseSpeed = Speed = speed;
-        this.basePolluting = pollutingValue;
+        Speed = maxSpeed;
+        speedIndex = new Index("Velocidad", "Representa que cantidad de la velocidad máxima es alcanzable",
+            speedIndexValue);
+        speedIndex.AddDependency(new Dependency(Wear, 75, Dependency.TYPE.SUBSTRACTION));
     }
 
     //////////////////////
@@ -246,57 +260,6 @@ public class Transport
                 Expansion = EXPANSION.LARGE;
                 return true;
             case EXPANSION.LARGE:
-            default:
-                return false;
-        }
-    }
-
-    /// <summary>
-    /// Increments the quality of the transport. This makes it safer and faster
-    /// </summary>
-    /// <returns>If the repairation is effective (not already repaired)</returns>
-    public bool Repair()
-    {
-        switch (Wear)
-        {
-            case WEAR.COMPLEATLY:
-                speed = baseSpeed * 0.75f;
-                Safety.Value = baseSafety;
-                Safety.ChangeIndexValue(Index.CHANGE.DROP);
-                Wear = WEAR.PARTIALLY;
-                return true;
-            case WEAR.PARTIALLY:
-                speed = baseSpeed;
-                Safety.Value = baseSafety;
-                Wear = WEAR.NONE;
-                return true;
-            case WEAR.NONE:
-            default:
-                return false;
-        }
-    }
-
-    /// <summary>
-    /// Decrements the quality of the transport. This makes it slower and unsafe
-    /// </summary>
-    /// <returns>If the erosion is effective (not already compleatly eroded)</returns>
-    public bool Erode()
-    {
-        switch (Wear)
-        {
-            case WEAR.NONE:
-                speed = baseSpeed * 0.75f;
-                Safety.Value = baseSafety;
-                Safety.ChangeIndexValue(Index.CHANGE.DROP);
-                Wear = WEAR.PARTIALLY;
-                return true;
-            case WEAR.PARTIALLY:
-                speed = baseSpeed * 0.5f;
-                Safety.Value = baseSafety;
-                Safety.ChangeIndexValue(Index.CHANGE.GREAT_DROP);
-                Wear = WEAR.COMPLEATLY;
-                return true;
-            case WEAR.COMPLEATLY:
             default:
                 return false;
         }
