@@ -10,30 +10,32 @@ public class Dependency
     /// ADDITION -> The greater the influencer the greater the influenced |
     /// REVERSE_SUBSTRACTION -> The influencer substracts from the influenced, the gretater the influencer, the less it substracts
     /// REVERSE_ADDITION -> The influencer adds to the influenced, the gretater the influencer, the less it adds
+    /// REVERSE_ADDITION -> If the influencer is over 50 the influence will be possitive, if it's under 50 it will be negative
     /// </summary>
     public enum TYPE
     {
         SUBSTRACTION = 0,
         ADDITION = 1,
         REVERSE_SUBSTRACTION = 2,
-        REVERSE_ADDITION = 3
+        REVERSE_ADDITION = 3,
+        SAME_TENDENCY
     }
     /////////////////////////
     /// Private Variables ///
     /////////////////////////
 
     TYPE dependencyType;
-    Index influencer;
+    int influencerID;
     int influence;
 
     /////////////////////////
     /// Public Properties ///
     /////////////////////////
 
-    public Index Influencer
+    public int InfluencerID
     {
-        get { return influencer; }
-        private set { influencer = value; }
+        get { return influencerID; }
+        private set { influencerID = value; }
     }
     public TYPE DependencyType
     {
@@ -57,7 +59,7 @@ public class Dependency
 
     public Dependency(Index influencer, int influence, TYPE dependencyType)
     {
-        Influencer = influencer;
+        InfluencerID = influencer.ID;
         Influence = influence;
         DependencyType = dependencyType;
     }

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class AnotherIndexTest : MonoBehaviour
 {
+    WaysOfTransport w;
+
     Index inversionIndex;
     Index tecnologiaIndex;
     Index seguridadCarreteraIndex;
@@ -49,12 +51,17 @@ public class AnotherIndexTest : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        w = new WaysOfTransport(inversion, tecnologia);
         Initialize();
+        Debug.Log("Número total de índices: " + Index.indexesDict.Count);
+        foreach(Index i in Index.indexesDict.Values)
+        {
+            Debug.Log("ID: " + i.ID + " MAME: " + i.Name + " DESCRIPTION: " + i.Description);
+        }
     }
 
     void Initialize()
     {
-        WaysOfTransport w = new WaysOfTransport(inversion, tecnologia);
         inversionIndex = w.Investment;
         tecnologiaIndex = w.Technology;
         seguridadCarreteraIndex = w.Road.Safety;
@@ -69,6 +76,7 @@ public class AnotherIndexTest : MonoBehaviour
         seguridadCalleIndex = w.Street.Safety;
         contaminacionCalleIndex = w.Street.Polluting;
         velocidadCalleIndex = w.Street.SpeedIndex;
+        //Debug.Log(Index.indexesDict[inversionIndex.ID].ID);
     }
 
     // Update is called once per frame

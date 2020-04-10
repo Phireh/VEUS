@@ -29,10 +29,10 @@ public class Transport
     /// </summary>
     public enum TYPE
     {
-        CAR = 0,
-        BIKE = 1,
-        FEET = 2,
-        TRAIN = 3
+        ROAD = 0,
+        CYCLE_LANE = 1,
+        STREET = 2,
+        SUBWAY = 3
     }
     /// <summary>
     /// Amplified capacity in comparison with the original
@@ -57,6 +57,7 @@ public class Transport
     /// Private Variables ///
     /////////////////////////
 
+    CityPart.PLACE cityPlace;
     EXPANSION expansion;
     TYPE transportType;
     Index wear;
@@ -132,9 +133,10 @@ public class Transport
     /// <param name="pollutingValue">Initial polluting level</param>
     /// <param name="expansion">Level of expansion of the transport (if it is not max it's possible to increment the capacity)</param>
     /// <param name="wear">Level of wear of the transport (if bad, it can improve | if good, it can get worse)</param>
-    public Transport(TYPE transportType, float safetyValue, int capacity, float maxSpeed, float speedIndexValue, float pollutingValue, EXPANSION expansion, WEAR wear)
+    public Transport(TYPE transportType, float safetyValue, int capacity, float maxSpeed, float speedIndexValue,
+        float pollutingValue, EXPANSION expansion, WEAR wear, CityPart.PLACE cityPlace)
     {
-        SetInitialValues(transportType, safetyValue, capacity, maxSpeed, speedIndexValue, pollutingValue, expansion, wear);
+        SetInitialValues(transportType, safetyValue, capacity, maxSpeed, speedIndexValue, pollutingValue, expansion, wear, cityPlace);
     }
 
     /// <summary>
@@ -144,7 +146,7 @@ public class Transport
     /// <param name="transportType">Type of the transport</param>
     /// <param name="expansion">Level of expansion of the transport</param>
     /// <param name="wear">Level of wear of the transport</param>
-    public Transport(TYPE transportType, EXPANSION expansion, WEAR wear)
+    public Transport(TYPE transportType, EXPANSION expansion, WEAR wear, CityPart.PLACE place)
     {
         float safetyValue;
         int capacity;
@@ -153,25 +155,25 @@ public class Transport
         float speedIndexValue = 1f;
         switch (transportType)
         {
-            case TYPE.FEET:
+            case TYPE.STREET:
                 capacity = baseStreetCapacity;
                 maxSpeed = baseStreetSpeed;
                 safetyValue = baseStreetSafety;
                 pollutingValue = baseSubwayPollution;
                 break;
-            case TYPE.BIKE:
+            case TYPE.CYCLE_LANE:
                 maxSpeed = baseCycleLaneSpeed;
                 capacity = baseCycleLaneCapacity;
                 safetyValue = baseCycleLaneSafety;
                 pollutingValue = baseCycleLanePollution;
                 break;
-            case TYPE.CAR:
+            case TYPE.ROAD:
                 capacity = baseRoadCapacity;
                 safetyValue = baseCycleLaneSafety;
                 maxSpeed = baseCycleLaneSpeed;
                 pollutingValue = baseCycleLanePollution;
                 break;
-            case TYPE.TRAIN:
+            case TYPE.SUBWAY:
             default:
                 capacity = baseSubwayCapacity;
                 safetyValue = baseSubwaySafety;
@@ -179,7 +181,7 @@ public class Transport
                 pollutingValue = baseSubwayPollution;
                 break;
         }
-        SetInitialValues(transportType, safetyValue, capacity, maxSpeed, speedIndexValue, pollutingValue, expansion, wear);
+        SetInitialValues(transportType, safetyValue, capacity, maxSpeed, speedIndexValue, pollutingValue, expansion, wear, place);
     }
 
     ////////////////////////
@@ -187,28 +189,14 @@ public class Transport
     ////////////////////////
 
     void SetInitialValues(TYPE transportType, float safetyValue, int capacity, float maxSpeed, float speedIndexValue,
-        float pollutingValue, EXPANSION expansion, WEAR wear)
+        float pollutingValue, EXPANSION expansion, WEAR wear, CityPart.PLACE cityPlace)
     {
-        string n;
-        switch (transportType)
-        {
-            case TYPE.FEET:
-                n = "caminando";
-                break;
-            case TYPE.BIKE:
-                n = "en bici";
-                break;
-            case TYPE.CAR:
-                n = "en coche";
-                break;
-            case TYPE.TRAIN:
-            default:
-                n = "en tren";
-                break;
-        }
+        this.cityPlace = cityPlace;
         TransportType = transportType;
-        Safety = new Index("Seguridad", "Representa como de seguro es desplazarse " + n, safetyValue);
-        Polluting = new Index("Contaminante", "Representa como de contaminante es despalzarse " + n, pollutingValue);
+        Safety = new Index("Seguridad", "Representa como de seguro es desplazarse por " + Names.transport[(int) transportType]
+            + " en el barrio " + Names.cityPart[(int)cityPlace], safetyValue);
+        Polluting = new Index("Contaminante", "Representa como de contaminante es despalzarse por "
+            + Names.transport[(int)transportType] + " en el barrio " + Names.cityPart[(int)cityPlace], pollutingValue);
         Expansion = EXPANSION.NONE;
         int i = 0;
         while (i < (int) expansion)
@@ -230,12 +218,13 @@ public class Transport
                 wearValue = Index.rand.Next(67, 100) / 100f;
                 break;
         }
-        Wear = new Index("Desgaste", "Representa como de desgastado está de desplazrse " + n, wearValue); 
+        Wear = new Index("Desgaste", "Representa como de desgastado está el transporte por "
+            + Names.transport[(int)transportType] + " en el barrio " + Names.cityPart[(int)place], wearValue); 
         Safety.AddDependency(new Dependency(Wear, 35, Dependency.TYPE.SUBSTRACTION));
         this.baseCapacity = Capacity = capacity;
         Speed = maxSpeed;
-        speedIndex = new Index("Velocidad", "Representa que cantidad de la velocidad máxima es alcanzable",
-            speedIndexValue);
+        speedIndex = new Index("Velocidad", "Representa que cantidad de la velocidad máxima es alcanzable viajando por "
+            + Names.transport[(int)transportType] + " en el barrio " + Names.cityPart[(int)place], speedIndexValue);
         speedIndex.AddDependency(new Dependency(Wear, 75, Dependency.TYPE.SUBSTRACTION));
     }
 

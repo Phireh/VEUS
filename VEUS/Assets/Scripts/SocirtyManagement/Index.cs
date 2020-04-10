@@ -4,7 +4,26 @@ using System.Collections.Generic;
 
 public class Index
 {
-    public static Random rand = new Random();
+    //////////////////////
+    // Static Variables //
+    //////////////////////
+    public static Random rand = new Random(); // Used to get random numbers all over the code xD
+    public static int idCounter = 0;
+    public static Dictionary<int, Index> indexesDict = new Dictionary<int, Index>();
+    public static int errorMarginInAChange = 20;
+    /// <summary>
+    /// ChangeIndexValue has a parameter to introduce random variations in the resul oof the operation.
+    /// The biggest this variable gets, the greater the variations will be (default = 20; 0 = fixed changes)
+    /// </summary>
+    public static int ErrorMarginInAChange
+    {
+        get { return errorMarginInAChange; }
+        set {
+            if (value < 0) errorMarginInAChange = 0;
+            else if (value > 100) errorMarginInAChange = 100;
+            else errorMarginInAChange = value;
+        }
+    }
 
     /// <summary>
     /// Describes the value of the index
@@ -26,7 +45,7 @@ public class Index
         40,     // LOW
         60,     // MEDIUM
         80,     // HIGH
-        99,    // VERY_HIGH
+        99,     // VERY_HIGH
         100     // MAX
     };
 
@@ -58,6 +77,7 @@ public class Index
     // Private Variables //
     ///////////////////////
 
+    int myId;
     bool isMin;
     bool isMax;
     string name;
@@ -70,6 +90,12 @@ public class Index
     // Public Properties //
     ///////////////////////
 
+    // ID repesentind the index
+    public int ID
+    {
+        get { return myId; }
+        private set { myId = value; }
+    }
     // Name of the index [10 characters or less]
     public string Name
     {
@@ -130,6 +156,8 @@ public class Index
         Name = name;
         Description = description;
         BaseValue = value; // Must be done aftter dependencies is initiallized, otherwise it will throw a exception
+        ID = idCounter++;
+        indexesDict.Add(ID, this);
     }
 
     //////////////////////
@@ -145,20 +173,26 @@ public class Index
         float aux = BaseValue;
         foreach (Dependency d in this.dependencies)
         {
+            Index influencer = indexesDict[d.InfluencerID];
+            int influence = d.Influence;
             switch (d.DependencyType)
             {
                 case Dependency.TYPE.ADDITION:
-                    aux += (d.Influence / 100f) * d.Influencer.Value;
+                    aux += (influence / 100f) * influencer.Value;
                     break;
                 case Dependency.TYPE.SUBSTRACTION:
-                    aux += (d.Influence / 100f) * d.Influencer.Value;
+                    aux -= (influence / 100f) * influencer.Value;
                     break;
                 case Dependency.TYPE.REVERSE_SUBSTRACTION:
-                    aux -= (d.Influence - d.Influence * d.Influencer.Value);
+                    aux += (influence - influence * influencer.Value) / 100f;
                     break;
                 case Dependency.TYPE.REVERSE_ADDITION:
+                    aux -= (influence - influence * influencer.Value) / 100f;
+                    break;
+                case Dependency.TYPE.SAME_TENDENCY:
                 default:
-                    aux -= (d.Influence - d.Influence * d.Influencer.Value);
+                    if (influencer.Value > 0.5f) aux += (influence - 50) * 2 * influencer.Value / 100f;
+                    else if (influencer.Value < 0.5f) aux -= (50 - influence) * 2 * influencer.Value / 100f;
                     break;
             }
         }
