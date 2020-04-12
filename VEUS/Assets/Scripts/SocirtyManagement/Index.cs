@@ -2,26 +2,27 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Index
+public abstract class Index
 {
     //////////////////////
-    // Static Variables //
+    // Static Component //
     //////////////////////
-    public static Random rand = new Random(); // Used to get random numbers all over the code xD
+
     public static int idCounter = 0;
     public static Dictionary<int, Index> indexesDict = new Dictionary<int, Index>();
-    public static int errorMarginInAChange = 20;
+    static int errorMarginInAnIndexChange = 20;
     /// <summary>
     /// ChangeIndexValue has a parameter to introduce random variations in the resul oof the operation.
-    /// The biggest this variable gets, the greater the variations will be (default = 20; 0 = fixed changes)
+    /// The biggest this variable gets, the greater the variations will be (default = 20; 0 => fixed changes)
     /// </summary>
-    public static int ErrorMarginInAChange
+    public static int ErrorMarginInAnIndexChange
     {
-        get { return errorMarginInAChange; }
-        set {
-            if (value < 0) errorMarginInAChange = 0;
-            else if (value > 100) errorMarginInAChange = 100;
-            else errorMarginInAChange = value;
+        get { return errorMarginInAnIndexChange; }
+        set
+        {
+            if (value < 0) errorMarginInAnIndexChange = 0;
+            else if (value > 100) errorMarginInAnIndexChange = 100;
+            else errorMarginInAnIndexChange = value;
         }
     }
 
@@ -38,7 +39,7 @@ public class Index
         VERY_HIGH = 5,
         MAX = 6
     }
-    public static int[] indexStateMaxLimitValues = new int[] 
+    public static int[] indexStateMaxLimitValues = new int[]
     {
         0,      // MIN
         20,     // VERY_LOW
@@ -48,7 +49,6 @@ public class Index
         99,     // VERY_HIGH
         100     // MAX
     };
-
     /// <summary>
     /// Used along with the ChamgeIndexValueMethod()
     /// </summary>
@@ -73,70 +73,67 @@ public class Index
         50,     // GREAT_INCREASE
     };
 
+    /// <summary>
+    /// Returns a float between two values determined by the state
+    /// </summary>
+    /// <param name="state">State to determine the value range</param>
+    /// <returns>
+    /// MIN [0] | VERY_LOW (0,0.2] | LOW (0.2,0.4] | MEDIUM (0.4,0.6] | 
+    /// HIGH (0.6,0.8] | VERY_HIGH (0.8,1) | MAX [1]
+    /// </returns>
+    public static float GetRoughValueFromState(STATE state)
+    {
+        switch (state)
+        {
+            case STATE.MAX:
+                return indexStateMaxLimitValues[(int)STATE.MAX] / 100f;
+            case STATE.VERY_HIGH:
+                return GlobalMethods.GetRandom(indexStateMaxLimitValues[(int)STATE.HIGH], indexStateMaxLimitValues[(int)STATE.VERY_HIGH]) / 100f;
+            case STATE.HIGH:
+                return GlobalMethods.GetRandom(indexStateMaxLimitValues[(int)STATE.MEDIUM], indexStateMaxLimitValues[(int)STATE.HIGH]) / 100f;
+            case STATE.MEDIUM:
+                return GlobalMethods.GetRandom(indexStateMaxLimitValues[(int)STATE.LOW], indexStateMaxLimitValues[(int)STATE.MEDIUM]) / 100f;
+            case STATE.LOW:
+                return GlobalMethods.GetRandom(indexStateMaxLimitValues[(int)STATE.VERY_LOW], indexStateMaxLimitValues[(int)STATE.LOW]) / 100f;
+            case STATE.VERY_LOW:
+                return GlobalMethods.GetRandom(indexStateMaxLimitValues[(int)STATE.MIN], indexStateMaxLimitValues[(int)STATE.VERY_LOW]) / 100f;
+            case STATE.MIN:
+            default:
+                return indexStateMaxLimitValues[(int)STATE.MIN];
+        }
+    }
+
     ///////////////////////
     // Private Variables //
     ///////////////////////
 
-    int myId;
-    bool isMin;
-    bool isMax;
-    string name;
-    string description;
-    float baseValue;
-    float value;
-    List<Dependency> dependencies;
+    bool isMin, isMax;
+    protected float baseValue;
 
     ///////////////////////
     // Public Properties //
     ///////////////////////
 
-    // ID repesentind the index
-    public int ID
-    {
-        get { return myId; }
-        private set { myId = value; }
-    }
-    // Name of the index [10 characters or less]
-    public string Name
-    {
-        get { return name; }
-        private set { if (value.Length < 21) name = value; } // Names can be 20 characters long as much
-    }
-    // Description of the index
-    public string Description
-    {
-        get { return description; }
-        private set { description = value; }
-    }
-    // Value of the index [0..1] (0 - 100%)
-    public float BaseValue
-    {
-        get { return baseValue; }
-        private set
-        {
-            if (value < 0.001) baseValue = 0f;
-            else if (value > 0.999) baseValue = 1f;
-            else baseValue = value;
-            UpdateDependentValue();
-        }
-    }
+    public int ID { get; private set; } // ID repesentind the index
+    public string Name { get; private set; } // Name of the index
+    public string Description { get; private set; } // Description of the index
     public float Value
     {
-        get { return value; }
-        private set
+        get { return GetIndexValue(); }
+        set
         {
             isMin = false; isMax = false;
             if (value < 0.001f)
             {
-                this.value = 0f;
+                this.baseValue = 0f;
                 isMin = true;
             }
             else if (value > 0.999f)
             {
-                this.value = 1f;
+                this.baseValue = 1f;
                 isMax = true;
             }
-            else this.value = value;
+            else this.baseValue = value;
         }
     }
 
@@ -152,66 +149,22 @@ public class Index
     /// <param name="value">Independent value of the index</param>
     public Index(string name, string description, float value)
     {
-        dependencies = new List<Dependency>();
         Name = name;
         Description = description;
-        BaseValue = value; // Must be done aftter dependencies is initiallized, otherwise it will throw a exception
+        Value = value; // Must be done aftter dependencies is initiallized, otherwise it will throw a exception
         ID = idCounter++;
         indexesDict.Add(ID, this);
     }
 
-    //////////////////////
-    // Auxiliar Methods //
-    //////////////////////
+    /////////////////////
+    // Private Methods //
+    /////////////////////
 
-    /// <summary>
-    /// Updates the dependent value. This value is the result of calculating the
-    /// influence of the dependencies on the base value of the index
-    /// </summary>
-    void UpdateDependentValue()
-    {
-        float aux = BaseValue;
-        foreach (Dependency d in this.dependencies)
-        {
-            Index influencer = indexesDict[d.InfluencerID];
-            int influence = d.Influence;
-            switch (d.DependencyType)
-            {
-                case Dependency.TYPE.ADDITION:
-                    aux += (influence / 100f) * influencer.Value;
-                    break;
-                case Dependency.TYPE.SUBSTRACTION:
-                    aux -= (influence / 100f) * influencer.Value;
-                    break;
-                case Dependency.TYPE.REVERSE_SUBSTRACTION:
-                    aux += (influence - influence * influencer.Value) / 100f;
-                    break;
-                case Dependency.TYPE.REVERSE_ADDITION:
-                    aux -= (influence - influence * influencer.Value) / 100f;
-                    break;
-                case Dependency.TYPE.SAME_TENDENCY:
-                default:
-                    if (influencer.Value > 0.5f) aux += (influence - 50) * 2 * influencer.Value / 100f;
-                    else if (influencer.Value < 0.5f) aux -= (50 - influence) * 2 * influencer.Value / 100f;
-                    break;
-            }
-        }
-        Value = aux;
-    }
+    protected abstract float GetIndexValue();
 
     ////////////////////
     // Public Methods //
     ////////////////////
-
-    /// <summary>
-    /// Adds a new dependency to the Index. Dependencies influence the Value of the index
-    /// </summary>
-    /// <param name="newDependency">The new dependency</param>
-    public void AddDependency(Dependency newDependency)
-    {
-        dependencies.Add(newDependency);
-        UpdateDependentValue();
-    }
 
     /// <summary>
     /// Changes the base value of the index
@@ -223,8 +176,8 @@ public class Index
     {
         if (errorMargin > 100) errorMargin = 100;
         else if (errorMargin < 0) errorMargin = 0;
-        float error = 1f + (rand.Next(-errorMargin, errorMargin) / 100f);
-        BaseValue += (indexChangeLimitValues[(int)change] * error) / 100f;
+        float error = 1f + (GlobalMethods.GetRandom(-errorMargin, errorMargin) / 100f);
+        Value += (indexChangeLimitValues[(int)change] * error) / 100f;
         return GetIndexState();
     }
 
@@ -233,7 +186,7 @@ public class Index
     /// </summary>
     /// <param name="change">Degree of the change. The error margin is 20%</param>
     /// <returns></returns>
-    public STATE ChangeIndexValue(CHANGE change) { return ChangeIndexValue(change, 20); }
+    public STATE ChangeIndexValue(CHANGE change) { return ChangeIndexValue(change, ErrorMarginInAnIndexChange); }
 
     /// <summary>
     /// Returns the index state depending on its value
@@ -253,33 +206,85 @@ public class Index
         else /*if (isMin)*/ return STATE.MIN;
     }
 
-    /// <summary>
-    /// Returns a float between two values determined by the state
-    /// </summary>
-    /// <param name="state">State to determine the value range</param>
-    /// <returns>
-    /// MIN [0] | VERY_LOW (0,0.2] | LOW (0.2,0.4] | MEDIUM (0.4,0.6] | 
-    /// HIGH (0.6,0.8] | VERY_HIGH (0.8,1) | MAX [1]
-    /// </returns>
-    public static float GetRoughValueFromState(STATE state)
+}
+
+public class ConditionableIndex : Index
+{
+    public ConditionableIndex(string name, string description, float value) : base(name, description, value) { }
+
+    protected override float GetIndexValue() { return baseValue; }
+
+    public override string ToString()
     {
-        switch (state)
+        return "_" + ID + "_ => " + Name + ": \"" + Description + "\" | Valor Base: (" + Value + ")";
+    }
+}
+
+public class DependentIndex : ConditionableIndex
+{
+    ///////////////////////
+    // Private Variables //
+    ///////////////////////
+
+    List<Dependency> dependencies; // List of Dependency objects affecting the index
+    HashSet<int> influencers; // IDs of th influent indexes
+
+    //////////////////
+    // Constructors //
+    //////////////////
+
+    public DependentIndex(string name, string description, float value) : base(name, description, value)
+    {
+        this.dependencies = new List<Dependency>();
+        influencers = new HashSet<int>();
+    }
+
+    /////////////////////
+    // Private Methods //
+    /////////////////////
+
+    protected override float GetIndexValue()
+    {
+        float aux = baseValue;
+        foreach (Dependency d in dependencies)
+            aux += d.RealInfluence;
+        return aux;
+    }
+
+    ////////////////////
+    // Public Methods //
+    ////////////////////
+
+    public void AddDependency(Dependency newDependency)
+    {
+        int influencerID = newDependency.Influencer.ID;
+        if (!influencers.Contains(influencerID))
         {
-            case STATE.MAX:
-                return indexStateMaxLimitValues[(int)STATE.MAX] / 100f;
-            case STATE.VERY_HIGH:
-                return rand.Next(indexStateMaxLimitValues[(int)STATE.HIGH], indexStateMaxLimitValues[(int)STATE.VERY_HIGH]) / 100f;
-            case STATE.HIGH:
-                return rand.Next(indexStateMaxLimitValues[(int)STATE.MEDIUM], indexStateMaxLimitValues[(int)STATE.HIGH]) / 100f;
-            case STATE.MEDIUM:
-                return rand.Next(indexStateMaxLimitValues[(int)STATE.LOW], indexStateMaxLimitValues[(int)STATE.MEDIUM]) / 100f;
-            case STATE.LOW:
-                return rand.Next(indexStateMaxLimitValues[(int)STATE.VERY_LOW], indexStateMaxLimitValues[(int)STATE.LOW]) / 100f;
-            case STATE.VERY_LOW:
-                return rand.Next(indexStateMaxLimitValues[(int)STATE.MIN], indexStateMaxLimitValues[(int)STATE.VERY_LOW]) / 100f;
-            case STATE.MIN:
-            default:
-                return indexStateMaxLimitValues[(int)STATE.MIN];
+            dependencies.Add(newDependency);
+            influencers.Add(influencerID);
         }
+        else GlobalMethods.PrintError("El índice _" + influencerID + "_ ya ejercía influencia sobre _" + ID + "_");
+    }
+
+    public void RemoveDependency(Index i)
+    {
+        if (influencers.Contains(i.ID))
+        {
+            foreach (Dependency d in dependencies)
+                if (d.Influencer.ID == i.ID)
+                {
+                    dependencies.Remove(d);
+                    influencers.Remove(i.ID);
+                    break;
+                }
+        }
+        else GlobalMethods.PrintError("El índice _" + i.ID + "_ no ejercía influencia sobre _" + ID + "_");
+    }
+
+    public override string ToString()
+    {
+        string res = "_" + ID + "_ => " + Name + ": \"" + Description + "\" | Valor Base: (" + baseValue + ") Valor Influído [" + Value + "] Dependencies: ";
+        foreach (Dependency d in dependencies) res += d.Influencer.ID + " - ";
+        return res;
     }
 }

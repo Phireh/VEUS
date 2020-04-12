@@ -2,46 +2,21 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Dependency
+public abstract class Dependency
 {
-    /// <summary>
-    /// Types of influence from an index to another.
-    /// SUBSTRACTION -> The greater the influencer the lower the influenced |
-    /// ADDITION -> The greater the influencer the greater the influenced |
-    /// REVERSE_SUBSTRACTION -> The influencer substracts from the influenced, the gretater the influencer, the less it substracts
-    /// REVERSE_ADDITION -> The influencer adds to the influenced, the gretater the influencer, the less it adds
-    /// REVERSE_ADDITION -> If the influencer is over 50 the influence will be possitive, if it's under 50 it will be negative
-    /// </summary>
-    public enum TYPE
-    {
-        SUBSTRACTION = 0,
-        ADDITION = 1,
-        REVERSE_SUBSTRACTION = 2,
-        REVERSE_ADDITION = 3,
-        SAME_TENDENCY
-    }
-    /////////////////////////
-    /// Private Variables ///
-    /////////////////////////
+    ///////////////////////
+    // Private Variables //
+    ///////////////////////
 
-    TYPE dependencyType;
-    int influencerID;
     int influence;
 
-    /////////////////////////
-    /// Public Properties ///
-    /////////////////////////
+    ///////////////////////
+    // Public Properties //
+    ///////////////////////
 
-    public int InfluencerID
-    {
-        get { return influencerID; }
-        private set { influencerID = value; }
-    }
-    public TYPE DependencyType
-    {
-        get { return dependencyType; }
-        private set { dependencyType = value; }
-    }
+    /// <summary>
+    /// The power the influencer can apply to the influenced
+    /// </summary>
     public int Influence
     {
         get { return influence; }
@@ -52,25 +27,83 @@ public class Dependency
             else influence = value;
         }
     }
+    /// <summary>
+    /// The change that the influencer produced in the influenced
+    /// </summary>
+    public float RealInfluence
+    {
+        get { return GetRealInfluence(); }
+        private set { return; }
+    }
+    public Index Influencer { get; private set; }
 
     //////////////////
     // Constructors //
     //////////////////
 
-    public Dependency(Index influencer, int influence, TYPE dependencyType)
+    public Dependency(Index influencer, int influence)
     {
-        InfluencerID = influencer.ID;
+        Influencer = influencer;
         Influence = influence;
-        DependencyType = dependencyType;
     }
-
-    //////////////////////
-    // Auxiliar Methods //
-    //////////////////////
-
-
 
     ////////////////////
     // Public Methods //
     ////////////////////
+
+    protected abstract float GetRealInfluence();
+}
+
+public class SubstractionDependency : Dependency
+{
+    protected override float GetRealInfluence()
+    {
+        return - (Influence * Influencer.Value) / 100f;
+    }
+
+    public SubstractionDependency(Index influencer, int influence) : base(influencer, influence) { }
+}
+
+public class AdditionDependency : Dependency
+{
+    protected override float GetRealInfluence()
+    {
+        return (Influence * Influencer.Value) / 100f;
+    }
+
+    public AdditionDependency(Index influencer, int influence) : base(influencer, influence) { }
+}
+
+public class ReverseSubstractionDependency : Dependency
+{
+    protected override float GetRealInfluence()
+    {
+        return - (Influence - Influence * Influencer.Value) / 100f;
+    }
+
+    public ReverseSubstractionDependency(Index influencer, int influence) : base(influencer, influence) { }
+}
+
+public class ReverseAdditionDependency : Dependency
+{
+    protected override float GetRealInfluence()
+    {
+        return (Influence - Influence * Influencer.Value) / 100f;
+    }
+
+    public ReverseAdditionDependency(Index influencer, int influence) : base(influencer, influence) { }
+}
+
+public class SameTendencyDependency : Dependency
+{
+    protected override float GetRealInfluence()
+    {
+        float ri = 0f;
+        if (Influencer.Value > 0.5f) ri = 1f;
+        else if (Influencer.Value < 0.5f) ri = -1f;
+        ri *= Influencer.Value * Influence / 100f;
+        return ri;
+    }
+
+    public SameTendencyDependency(Index influencer, int influence) : base(influencer, influence) { }
 }
