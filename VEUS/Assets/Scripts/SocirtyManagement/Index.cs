@@ -54,16 +54,19 @@ public abstract class Index
     /// </summary>
     public enum CHANGE
     {
-        GREAT_DROP = 0,
-        DROP = 1,
-        LOW_DROP = 2,
-        IMPERCENTIBLE = 3,
-        LOW_INCREASE = 4,
-        INCREASE = 5,
-        GREAT_INCREASE = 6
+        MINIMIZE = 0,
+        GREAT_DROP = 1,
+        DROP = 2,
+        LOW_DROP = 3,
+        IMPERCENTIBLE = 4,
+        LOW_INCREASE = 5,
+        INCREASE = 6,
+        GREAT_INCREASE = 7,
+        MAXIMIZE = 8
     }
     public static int[] indexChangeLimitValues = new int[]
     {
+        -100,   // MINIMIZE
         -50,    // GREAT_DROP
         -30,    // DROP
         -15,    // LOW_DROP
@@ -71,6 +74,7 @@ public abstract class Index
         15,     // LOW_INCREASE
         30,     // INCREASE
         50,     // GREAT_INCREASE
+        100     // MAXIMIZE
     };
 
     /// <summary>
@@ -107,7 +111,7 @@ public abstract class Index
     // Private Variables //
     ///////////////////////
 
-    bool isMin, isMax;
+    bool isMax;
     protected float baseValue;
 
     ///////////////////////
@@ -122,12 +126,9 @@ public abstract class Index
         get { return GetIndexValue(); }
         set
         {
-            isMin = false; isMax = false;
+            isMax = false;
             if (value < 0.001f)
-            {
                 this.baseValue = 0f;
-                isMin = true;
-            }
             else if (value > 0.999f)
             {
                 this.baseValue = 1f;
@@ -174,6 +175,18 @@ public abstract class Index
     /// <returns></returns>
     public STATE ChangeIndexValue(CHANGE change, int errorMargin)
     {
+        // If minimizing or maximizing changes are implied, there is no place for random results
+        if (change == CHANGE.MINIMIZE)
+        {                               
+            Value = 0f;
+            return STATE.MIN;
+        }
+        else if (change == CHANGE.MAXIMIZE)
+        {
+            Value = 1f;
+            return STATE.MAX;
+        }
+
         if (errorMargin > 100) errorMargin = 100;
         else if (errorMargin < 0) errorMargin = 0;
         float error = 1f + (GlobalMethods.GetRandom(-errorMargin, errorMargin) / 100f);

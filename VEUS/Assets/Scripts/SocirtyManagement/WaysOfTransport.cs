@@ -24,9 +24,9 @@ public class WaysOfTransport
     public WaysOfTransport(float technologyValue, float investmentValue, CityPart.PLACE cityPlace)
     {
         CityPlace = cityPlace;
-        Technology = new IndependentIndex("Tecnología", "Nivel de la tecnología de los transportes en el barrio "
+        Technology = new ConditionableIndex("Tecnología", "Nivel de la tecnología de los transportes en el barrio "
             + GlobalNames.cityPart[(int)cityPlace], technologyValue);
-        Investment = new IndependentIndex("Inversión", "Nivel de inversión dirigida a los transportes en el barrio "
+        Investment = new ConditionableIndex("Inversión", "Nivel de inversión dirigida a los transportes en el barrio "
             + GlobalNames.cityPart[(int)cityPlace], investmentValue);
 
         Road = new Transport(Transport.TYPE.ROAD, GlobalValues.transportSafety[(int)Transport.TYPE.ROAD], 0f, GlobalValues.transportCapacity[(int)Transport.TYPE.ROAD],

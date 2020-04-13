@@ -5,14 +5,14 @@ using UnityEngine;
 public class DependencyTest : MonoBehaviour
 {
     DependentIndex i1;
-    IndependentIndex i2;
+    ConditionableIndex i2;
     // Start is called before the first frame update
     void Start()
     {
         Debug.LogWarning("Empezamos");
         Index.ErrorMarginInAnIndexChange = 0;
         i1 = new DependentIndex("Índice Dependiente", "Índice Influido", 0.5f);
-        i2 = new IndependentIndex("Índice Independiente", "Índice que influye", 0.5f);
+        i2 = new ConditionableIndex("Índice Independiente", "Índice que influye", 0.5f);
         Debug.Log(i1);
         Debug.Log(i2);
 
@@ -64,7 +64,7 @@ public class DependencyTest : MonoBehaviour
         Debug.Log(i2);
 
         Debug.LogWarning("Añadimos otro influyente");
-        Index i3 = new IndependentIndex("Otro Índice Independiente", "Índice que también influye", 0.5f);
+        Index i3 = new ConditionableIndex("Otro Índice Independiente", "Índice que también influye", 0.5f);
         i1.AddDependency(new SubstractionDependency(i3, 25));
         Debug.Log(i1);
         Debug.Log(i2);

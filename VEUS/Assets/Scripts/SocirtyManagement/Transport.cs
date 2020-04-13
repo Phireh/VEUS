@@ -44,13 +44,13 @@ public class Transport
     float baseSpeed;
     int baseCapacity;
     Index speedIndex;
+    EXPANSION expansion;
+    MAINTENANCE maintenance;
 
     ///////////////////////
     // Public Properties //
     ///////////////////////
 
-    public EXPANSION Expansion { get; private set; }
-    public MAINTENANCE Maintenance { get; private set; }
     public TYPE TransportType { get; private set; }
     public CityPart.PLACE CityPlace { get; private set; }
     public DependentIndex Wear { get; private set; }
@@ -100,10 +100,10 @@ public class Transport
 
     int GetCapacity()
     {
-        switch (Expansion)
+        switch (expansion)
         {
             case EXPANSION.NONE:
-                Expansion = EXPANSION.SMALL;
+                expansion = EXPANSION.SMALL;
                 return baseCapacity ;
             case EXPANSION.SMALL:
                 return baseCapacity * 2;
@@ -117,6 +117,9 @@ public class Transport
     // Public Methods //
     ////////////////////
 
-
+    public EXPANSION GetExpansionState() => this.expansion;
+    public MAINTENANCE GetMaintenanceState() => this.maintenance;
+    public void SetExpansionState(EXPANSION newExpansionState) => this.expansion = newExpansionState;
+    public void SetMaintenanceState(MAINTENANCE newMaintenanceState) => this.maintenance = newMaintenanceState;
 
 }

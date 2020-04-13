@@ -31,6 +31,7 @@ public class GlobalNames
         transport[(int)Leisure.PLACE.PARK] = "PARQUE";
         transport[(int)Leisure.PLACE.GYM] = "GIMNASIO";
 
+        /*
         jobs = new string[Enum.GetNames(typeof(Job.TYPE)).Length];
         transport[(int)Job.TYPE.POLICEMAN] = "POLICÍA";
         transport[(int)Job.TYPE.DOCTOR] = "MÉDICO";
@@ -38,5 +39,6 @@ public class GlobalNames
         transport[(int)Job.TYPE.SUBWAY_WORKER] = "TRABAJADOR DEL METRO";
         transport[(int)Job.TYPE.OFFICE_WORKER] = "OFICINISTA";
         transport[(int)Job.TYPE.EXECUTIVE_OFFICER] = "DIRECTOR EJECUTIVO";
+        */
     }
 }

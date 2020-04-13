@@ -8,7 +8,7 @@ public static class ConditionController
     // Variables //
     ///////////////
 
-    static List<Condition> allConditions;
+    static List<Condition> allConditions = new List<Condition>();
 
     /////////////
     // Methods //
@@ -25,7 +25,11 @@ public static class ConditionController
     {
         int count = 0;
         foreach (Condition c in allConditions)
-            if (c.ApplyCondition()) count++;
+            if (c.ApplyCondition())
+            {
+                allConditions.Remove(c);
+                count++;
+            }
         return count;
     }
 

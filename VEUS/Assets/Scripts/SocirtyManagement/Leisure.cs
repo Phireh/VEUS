@@ -66,23 +66,17 @@ public class Leisure
     ///////////////////////
 
     int baseCost;
+    AVAILABILITY availability;
+    LeisureSchedule schedule;
 
     ///////////////////////
     // Public Properties //
     ///////////////////////
 
-    public LeisureSchedule Schedule { get; private set; }
     public CityPart.PLACE CityPlace { get; private set; }
     // Type of activity
     public TYPE LeisureType { get; private set; }
     public PLACE LeisurePlace { get; private set; }
-    public AVAILABILITY Availability { get; private set; }
-    // Money necesary to do the activity [>=0]
-    public int Cost
-    {
-        get { return GetCost(); }
-        private set { if (value >= 0) baseCost = value; }
-    }
     public Index Satisfaction { get; private set; }
 
     //////////////////
@@ -95,17 +89,20 @@ public class Leisure
     // Auxiliar Methods //
     //////////////////////
 
-    void SetSchedule(int opening, int timeOpened, int timeRequiered) { Schedule.SetTimeSchedule(opening, timeOpened, timeRequiered); }
-
-    int GetCost() 
+    void SetValues()
     {
-        return baseCost;
+
     }
 
     ////////////////////
     // Public Methods //
     ////////////////////
 
-
+    public int GetCost() => baseCost;
+    public void SetCost(int newCost) => this.baseCost = newCost;
+    public AVAILABILITY GetAvailability() => availability;
+    public void SetAvailability(AVAILABILITY newAvailability) => this.availability = newAvailability;
+    public LeisureSchedule GetSchedule() => schedule;
+    public void SetSchedule(LeisureSchedule newSchedule) => this.schedule = newSchedule;
 
 }

@@ -2,6 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 
+////////////////////////////////////////
+// DEFINITION OF THE ABSTRACT CLASSES //
+////////////////////////////////////////
+
+/// <summary>
+/// Every condition has the ApplyCondition() methd that returns true if the condition
+/// is satisfied when called. The body of this method corresponds to te Condition effects
+/// </summary>
 public abstract class Condition
 {
 
@@ -25,10 +33,17 @@ public abstract class Condition
     // Public Methods //
     ////////////////////
 
+    /// <summary>
+    /// Applys the effects of the condition if it's satisfied
+    /// </summary>
+    /// <returns>True if the condition is satisfied. False otherwise</returns>
     public abstract bool ApplyCondition();
 
 }
 
+/// <summary>
+/// This kind of conditions have an Index as the conditioner
+/// </summary>
 public abstract class IndexCondition : Condition
 {
     ///////////////////////
@@ -54,6 +69,10 @@ public abstract class IndexCondition : Condition
     public override abstract bool ApplyCondition();
 }
 
+/// <summary>
+/// This kind of condition have an Index as the conditioner and another Index as the conditioned
+/// If the condition is satisfied the conditioned index changes its value
+/// </summary>
 public abstract class IndexToIndexCondition : IndexCondition
 {
     ///////////////////////
@@ -61,59 +80,6 @@ public abstract class IndexToIndexCondition : IndexCondition
     ///////////////////////
 
     public Index Conditioned { get; private set; }
-
-    //////////////////
-    // Constructors //
-    //////////////////
-
-    public IndexToIndexCondition(Index conditioner, Index conditioned) : base(conditioner)
-    {
-        Conditioned = conditioned;
-    }
-
-    //////////////////////
-    // Abstract Methods //
-    //////////////////////
-
-    protected override abstract bool IsSatisfied();
-    public override abstract bool ApplyCondition();
-}
-
-unsafe public struct AttributeAndValor<T>
-{
-    public T* atr;
-    public T* val;
-
-    public AttributeAndValor(T atr, ref T val)
-    {
-        this.atr = *atr;
-        this.val = *val;
-    }
-}
-
-public abstract class IndexToAttributeCondition<T> : IndexCondition
-{
-    public AttributeAndValor<T> Result { get; private set; }
-
-    public IndexToAttributeCondition(Index conditioner, AttributeAndValor<T> result) : base(conditioner)
-    {
-        Result = result;
-    }
-
-    //////////////////////
-    // Abstract Methods //
-    //////////////////////
-
-    protected override abstract bool IsSatisfied();
-    public override abstract bool ApplyCondition();
-}
-
-public class IndexToIndexStateCondition : IndexToIndexCondition
-{
-    ///////////////////////
-    // Public Properties //
-    ///////////////////////
-
     public Index.STATE TargetState { get; private set; }
     public Index.CHANGE Change { get; private set; }
 
@@ -121,18 +87,18 @@ public class IndexToIndexStateCondition : IndexToIndexCondition
     // Constructors //
     //////////////////
 
-    public IndexToIndexStateCondition(Index conditioner, Index conditioned, Index.STATE state, Index.CHANGE change)
-        : base(conditioner, conditioned)
+    public IndexToIndexCondition(Index conditioner, Index conditioned, Index.STATE state, Index.CHANGE change) : base(conditioner)
     {
+        Conditioned = conditioned;
         TargetState = state;
         Change = change;
     }
 
     //////////////////////
-    // Auxiliar Methods //
+    // Abstract Methods //
     //////////////////////
 
-    protected override bool IsSatisfied() { return Conditioned.GetIndexState() == TargetState; }
+    protected override abstract bool IsSatisfied();
 
     ////////////////////
     // Public Methods //
@@ -149,25 +115,233 @@ public class IndexToIndexStateCondition : IndexToIndexCondition
     }
 }
 
-
-public class AttributeToAtributeStateCondition<T> : Condition
+/// <summary>
+/// This kind of conditions have an Object's attribute as the conditioner
+/// </summary>
+public abstract class AttributeCondition<T> : Condition
 {
+
     ///////////////////////
-    // Public Properties //
+    // Private Variables //
     ///////////////////////
 
-    public AttributeAndValor<Enum> Condition { get; private set; }
-    public AttributeAndValor<T> Result { get; private set; }
+    protected Func<T> conditionerGetter;
+    protected T conditionerTriggerValue;
 
     //////////////////
     // Constructors //
     //////////////////
 
-    public AttributeToAtributeStateCondition(AttributeAndValor<Enum> condition, AttributeAndValor<T> result)
+    public AttributeCondition(Func<T> conditionerGetter, T conditionerTriggerValue)
     {
-        Condition = condition;
-        Result = result;
+        this.conditionerGetter = conditionerGetter;
+        this.conditionerTriggerValue = conditionerTriggerValue;
     }
+
+    //////////////////////
+    // Abstract Methods //
+    //////////////////////
+
+    protected override abstract bool IsSatisfied();
+    public override abstract bool ApplyCondition();
+}
+
+/// <summary>
+/// This kind of condition have an Object's attribute as the conditioner and another Object's attribute as the conditioned
+/// </summary>
+public abstract class AttributeToAtributeCondition<T, V> : AttributeCondition<T>
+{
+    ///////////////////////
+    // Private Variables //
+    ///////////////////////
+
+    Action<V> conditionedSetter;
+    V conditionedResultValue;
+
+    //////////////////
+    // Constructors //
+    //////////////////
+
+    public AttributeToAtributeCondition(Func<T> conditionerGetter, Action<V> conditionedSetter,
+        T conditionerTriggerValue, V conditionedResultValue) : base(conditionerGetter, conditionerTriggerValue)
+    {
+        this.conditionedSetter = conditionedSetter;
+        this.conditionedResultValue = conditionedResultValue;
+    }
+
+    //////////////////////
+    // Abstract Methods //
+    //////////////////////
+
+    protected override abstract bool IsSatisfied();
+    public override abstract bool ApplyCondition();
+
+}
+
+/// <summary>
+/// This kind of condition have an Index as the conditioner and an Object's attribute as the conditioned
+/// </summary>
+public abstract class IndexToAttributeCondition<T> : IndexCondition
+{
+
+    ///////////////////////
+    // Private Variables //
+    ///////////////////////
+
+    protected Action<T> conditionedSetter;
+    protected T conditionedResultValue;
+
+    //////////////////
+    // Constructors //
+    //////////////////
+
+    public IndexToAttributeCondition(Index conditioner, Action<T> conditionedSetter, T conditionedResultValue)
+        : base(conditioner)
+    {
+        this.conditionedSetter = conditionedSetter;
+        this.conditionedResultValue = conditionedResultValue;
+    }
+
+    //////////////////////
+    // Abstract Methods //
+    //////////////////////
+
+    protected override abstract bool IsSatisfied();
+    public override abstract bool ApplyCondition();
+}
+
+/// <summary>
+/// This kind of condition have an Object's attribute and an Index as the conditioned
+/// </summary>
+public abstract class AttributeToIndexCondition<T> : AttributeCondition<T>
+{
+
+    ///////////////////////
+    // Private Variables //
+    ///////////////////////
+
+    public Index Conditioned { get; private set; }
+
+    //////////////////
+    // Constructors //
+    //////////////////
+
+    public AttributeToIndexCondition(Func<T> conditionerGetter, T conditionerTriggerValue, Index conditioned)
+        : base(conditionerGetter, conditionerTriggerValue)
+    {
+        Conditioned = conditioned;
+    }
+
+    //////////////////////
+    // Abstract Methods //
+    //////////////////////
+
+    protected override abstract bool IsSatisfied();
+    public override abstract bool ApplyCondition();
+}
+
+///////////////////////////////////
+// IMPLEMENTATION OF THE CLASSES //
+///////////////////////////////////
+
+/// <summary>
+/// This is a kind of IndexToIndexCondition where the condition is satisfied if the conditioner Index state is exactly equal to the TriggerState
+/// </summary>
+public class IndexToIndexStateCondition : IndexToIndexCondition
+{
+    //////////////////
+    // Constructors //
+    //////////////////
+
+    /// <summary>
+    /// Creates an IndexToIndexStateCondition
+    /// </summary>
+    /// <param name="conditioner">Conditioner Index</param>
+    /// <param name="conditioned">Conditioned Index</param>
+    /// <param name="state">The state the conditioner has to reach to satisfy the condition</param>
+    /// <param name="change"> The change that will be applied to the conditioned</param>
+    public IndexToIndexStateCondition(Index conditioner, Index conditioned, Index.STATE state, Index.CHANGE change)
+        : base(conditioner, conditioned, state, change)
+    { }
+
+    //////////////////////
+    // Auxiliar Methods //
+    //////////////////////
+
+    protected override bool IsSatisfied() { return Conditioned.GetIndexState() == TargetState; }
+}
+
+/// <summary>
+/// This is a kind of IndexToIndexCondition where the condition is satisfied if the conditioner Index is equal or greater than the TriggerState
+/// </summary>
+public class IndexToIndexReachStateCondition : IndexToIndexCondition
+{
+    //////////////////
+    // Constructors //
+    //////////////////
+
+    /// <summary>
+    /// Creates an IndexToIndexStateCondition
+    /// </summary>
+    /// <param name="conditioner">Conditioner Index</param>
+    /// <param name="conditioned">Conditioned Index</param>
+    /// <param name="state">The state the conditioner has to reach to satisfy the condition</param>
+    /// <param name="change"> The change that will be applied to the conditioned</param>
+    public IndexToIndexReachStateCondition(Index conditioner, Index conditioned, Index.STATE state, Index.CHANGE change)
+        : base(conditioner, conditioned, state, change)
+    { }
+
+    //////////////////////
+    // Auxiliar Methods //
+    //////////////////////
+
+    protected override bool IsSatisfied() { return Conditioned.GetIndexState() >= TargetState; }
+}
+
+/// <summary>
+/// This is a kind of IndexToIndexCondition where the condition is satisfied if the conditioner Index is equal or greater than the TriggerState
+/// </summary>
+public class IndexToIndexSinkStateCondition : IndexToIndexCondition
+{
+    //////////////////
+    // Constructors //
+    //////////////////
+
+    /// <summary>
+    /// Creates an IndexToIndexStateCondition
+    /// </summary>
+    /// <param name="conditioner">Conditioner Index</param>
+    /// <param name="conditioned">Conditioned Index</param>
+    /// <param name="state">The state the conditioner has to reach to satisfy the condition</param>
+    /// <param name="change"> The change that will be applied to the conditioned</param>
+    public IndexToIndexSinkStateCondition(Index conditioner, Index conditioned, Index.STATE state, Index.CHANGE change)
+        : base(conditioner, conditioned, state, change)
+    { }
+
+    //////////////////////
+    // Auxiliar Methods //
+    //////////////////////
+
+    protected override bool IsSatisfied() { return Conditioned.GetIndexState() <= TargetState; }
+}
+
+public class AttributeToAtributeValueCondition<T, V> : AttributeToAtributeCondition<T, V>
+{
+    ///////////////////////
+    // Private Variables //
+    ///////////////////////
+
+    Action<V> conditionedSetter;
+    V conditionedResultValue;
+
+    //////////////////
+    // Constructors //
+    //////////////////
+
+    public AttributeToAtributeValueCondition(Func<T> conditionerGetter, Action<V> conditionedSetter,
+        T conditionerTriggerValue, V conditionedResultValue)
+        : base(conditionerGetter, conditionedSetter, conditionerTriggerValue, conditionedResultValue)
+    { }
 
     //////////////////////
     // Auxiliar Methods //
@@ -175,7 +349,7 @@ public class AttributeToAtributeStateCondition<T> : Condition
 
     protected override bool IsSatisfied()
     {
-        return (Condition.atr.Equals(Condition.val));
+        return (conditionerTriggerValue.Equals(conditionerGetter()));
     }
 
     ////////////////////
@@ -186,7 +360,7 @@ public class AttributeToAtributeStateCondition<T> : Condition
     {
         if (Satisfied)
         {
-            Result.atr = Result.val;
+            conditionedSetter(conditionedResultValue);
             return true;
         }
         return false;
