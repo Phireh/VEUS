@@ -9,8 +9,8 @@ public abstract class Index
     //////////////////////
 
     public static int idCounter = 0;
-    public static Dictionary<int, Index> indexesDict = new Dictionary<int, Index>();
     static int errorMarginInAnIndexChange = 20;
+
     /// <summary>
     /// ChangeIndexValue has a parameter to introduce random variations in the resul oof the operation.
     /// The biggest this variable gets, the greater the variations will be (default = 20; 0 => fixed changes)
@@ -92,15 +92,15 @@ public abstract class Index
             case STATE.MAX:
                 return indexStateMaxLimitValues[(int)STATE.MAX] / 100f;
             case STATE.VERY_HIGH:
-                return GlobalMethods.GetRandom(indexStateMaxLimitValues[(int)STATE.HIGH], indexStateMaxLimitValues[(int)STATE.VERY_HIGH]) / 100f;
+                return Global.Methods.GetRandomPercentage(indexStateMaxLimitValues[(int)STATE.HIGH], indexStateMaxLimitValues[(int)STATE.VERY_HIGH]) / 100f;
             case STATE.HIGH:
-                return GlobalMethods.GetRandom(indexStateMaxLimitValues[(int)STATE.MEDIUM], indexStateMaxLimitValues[(int)STATE.HIGH]) / 100f;
+                return Global.Methods.GetRandomPercentage(indexStateMaxLimitValues[(int)STATE.MEDIUM], indexStateMaxLimitValues[(int)STATE.HIGH]) / 100f;
             case STATE.MEDIUM:
-                return GlobalMethods.GetRandom(indexStateMaxLimitValues[(int)STATE.LOW], indexStateMaxLimitValues[(int)STATE.MEDIUM]) / 100f;
+                return Global.Methods.GetRandomPercentage(indexStateMaxLimitValues[(int)STATE.LOW], indexStateMaxLimitValues[(int)STATE.MEDIUM]) / 100f;
             case STATE.LOW:
-                return GlobalMethods.GetRandom(indexStateMaxLimitValues[(int)STATE.VERY_LOW], indexStateMaxLimitValues[(int)STATE.LOW]) / 100f;
+                return Global.Methods.GetRandomPercentage(indexStateMaxLimitValues[(int)STATE.VERY_LOW], indexStateMaxLimitValues[(int)STATE.LOW]) / 100f;
             case STATE.VERY_LOW:
-                return GlobalMethods.GetRandom(indexStateMaxLimitValues[(int)STATE.MIN], indexStateMaxLimitValues[(int)STATE.VERY_LOW]) / 100f;
+                return Global.Methods.GetRandomPercentage(indexStateMaxLimitValues[(int)STATE.MIN], indexStateMaxLimitValues[(int)STATE.VERY_LOW]) / 100f;
             case STATE.MIN:
             default:
                 return indexStateMaxLimitValues[(int)STATE.MIN];
@@ -154,7 +154,7 @@ public abstract class Index
         Description = description;
         Value = value; // Must be done aftter dependencies is initiallized, otherwise it will throw a exception
         ID = idCounter++;
-        indexesDict.Add(ID, this);
+        FlowChartController.AddIndex(this);
     }
 
     /////////////////////
@@ -189,7 +189,7 @@ public abstract class Index
 
         if (errorMargin > 100) errorMargin = 100;
         else if (errorMargin < 0) errorMargin = 0;
-        float error = 1f + (GlobalMethods.GetRandom(-errorMargin, errorMargin) / 100f);
+        float error = 1f + (Global.Methods.GetRandomPercentage(-errorMargin, errorMargin) / 100f);
         Value += (indexChangeLimitValues[(int)change] * error) / 100f;
         return GetIndexState();
     }
@@ -198,8 +198,18 @@ public abstract class Index
     /// Changes the base value of the index
     /// </summary>
     /// <param name="change">Degree of the change. The error margin is 20%</param>
-    /// <returns></returns>
-    public STATE ChangeIndexValue(CHANGE change) { return ChangeIndexValue(change, ErrorMarginInAnIndexChange); }
+    /// <returns>The index state after the operation</returns>
+    public STATE ChangeIndexValue(CHANGE change) => ChangeIndexValue(change, ErrorMarginInAnIndexChange); 
+    /// <summary>
+    /// Changes the base value of the index
+    /// </summary>
+    /// <param name="change">Exact change</param>
+    /// <returns>The index state after the operation</returns>
+    public STATE ChangeIndexValue(float change)
+    {
+        Value -= change;
+        return GetIndexState();
+    }
 
     /// <summary>
     /// Returns the index state depending on its value
@@ -225,22 +235,22 @@ public class ConditionableIndex : Index
 {
     public ConditionableIndex(string name, string description, float value) : base(name, description, value) { }
 
-    protected override float GetIndexValue() { return baseValue; }
+    protected override float GetIndexValue() => baseValue;
 
     public override string ToString()
     {
-        return "_" + ID + "_ => " + Name + ": \"" + Description + "\" | Valor Base: (" + Value + ")";
+        return "Índice condicionable:[" + ID + "] => " + Name + ": \"" + Description + "\" | Valor Base: (" + Value + ")";
     }
 }
 
-public class DependentIndex : ConditionableIndex
+public class DependentIndex : Index
 {
     ///////////////////////
     // Private Variables //
     ///////////////////////
 
-    List<Dependency> dependencies; // List of Dependency objects affecting the index
     HashSet<int> influencers; // IDs of th influent indexes
+    float realInfluence;
 
     //////////////////
     // Constructors //
@@ -248,7 +258,6 @@ public class DependentIndex : ConditionableIndex
 
     public DependentIndex(string name, string description, float value) : base(name, description, value)
     {
-        this.dependencies = new List<Dependency>();
         influencers = new HashSet<int>();
     }
 
@@ -256,13 +265,7 @@ public class DependentIndex : ConditionableIndex
     // Private Methods //
     /////////////////////
 
-    protected override float GetIndexValue()
-    {
-        float aux = baseValue;
-        foreach (Dependency d in dependencies)
-            aux += d.RealInfluence;
-        return aux;
-    }
+    protected override float GetIndexValue() => baseValue + realInfluence;
 
     ////////////////////
     // Public Methods //
@@ -270,34 +273,19 @@ public class DependentIndex : ConditionableIndex
 
     public void AddDependency(Dependency newDependency)
     {
-        int influencerID = newDependency.Influencer.ID;
-        if (!influencers.Contains(influencerID))
-        {
-            dependencies.Add(newDependency);
-            influencers.Add(influencerID);
-        }
-        else GlobalMethods.PrintError("El índice _" + influencerID + "_ ya ejercía influencia sobre _" + ID + "_");
     }
 
     public void RemoveDependency(Index i)
     {
-        if (influencers.Contains(i.ID))
-        {
-            foreach (Dependency d in dependencies)
-                if (d.Influencer.ID == i.ID)
-                {
-                    dependencies.Remove(d);
-                    influencers.Remove(i.ID);
-                    break;
-                }
-        }
-        else GlobalMethods.PrintError("El índice _" + i.ID + "_ no ejercía influencia sobre _" + ID + "_");
+
     }
+
+    public void SetRealInfluence(float realInfluence) => this.realInfluence = realInfluence;
 
     public override string ToString()
     {
-        string res = "_" + ID + "_ => " + Name + ": \"" + Description + "\" | Valor Base: (" + baseValue + ") Valor Influído [" + Value + "] Dependencies: ";
-        foreach (Dependency d in dependencies) res += d.Influencer.ID + " - ";
+        string res = "Índice dependiente:[" + ID + "] => " + Name + ": \"" + Description + "\" | Valor Base: (" + baseValue + ") Valor Influído [" + Value + "] Dependencias: ";
+        foreach (int d in influencers) res += d + "  ";
         return res;
     }
 }

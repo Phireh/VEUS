@@ -18,15 +18,23 @@ public class Leisure
         SPORT = 2,
         SHOW = 3
     }
+    public static Citizen.NATURE[] typeToNatureMatching = new Citizen.NATURE[]
+    {
+        Citizen.NATURE.ACTIVE,  // PARTY
+        Citizen.NATURE.CALM,    // CALM
+        Citizen.NATURE.SOCIAL,  // SPORT
+        Citizen.NATURE.DREAMER  // SHOW
+    };
     /// <summary>
     /// Different types of leisure places, each one has an assocciated activitie (TYPE)
     /// </summary>
     public enum PLACE
     {
-        DISCO = 0,
-        PARK = 1,
-        GYM = 2,
-        CINEMA = 3
+        NONE = 0,
+        DISCO = 1,
+        PARK = 2,
+        GYM = 3,
+        CINEMA = 4
     }
     public enum AVAILABILITY
     {
@@ -42,22 +50,27 @@ public class Leisure
         // Closing hour [0..23]
         public int Closing { get; private set; }
         // Time needed to do an activity [>0]
-        public int Time { get; set; }
-        public bool BetweenDays { get; private set; }
+        public int RequieredTime { get; set; }
+        // If Closing < Opening
+        public bool BetweenDays { get; set; }
 
-        public void SetTimeSchedule(int opening, int timeOpened, int timeRequiered)
+        public LeisureSchedule(int opening, int openedTime, int timeRequiered)
         {
-            if (timeOpened > 23) timeOpened = 23;
-            else if (timeOpened < 1) timeOpened = 1;
+            BetweenDays = false;
             if (opening > 23) Opening = 23;
-            else if (opening < 1) Opening = 1;
+            else if (opening < 0) Opening = 0;
             else Opening = opening;
-            if (timeRequiered > timeOpened) timeRequiered = timeOpened;
+            if (openedTime > 23) openedTime = 23;
+            else if (openedTime < 1) openedTime = 1;
+            Closing = Opening + openedTime;
+            if (Closing > 23)
+            {
+                Closing -= 24;
+                BetweenDays = true;
+            }
+            if (timeRequiered > openedTime) timeRequiered = openedTime;
             else if (timeRequiered < 1) timeRequiered = 1;
-            if (Opening + timeOpened > 23) BetweenDays = true;
-            if (BetweenDays) Closing = 23 - Opening;
-            else Closing = Opening + timeOpened;
-            Time = timeRequiered;
+            RequieredTime = timeRequiered;
         }
     }
 
@@ -65,44 +78,71 @@ public class Leisure
     // Private Variables //
     ///////////////////////
 
-    int baseCost;
     AVAILABILITY availability;
-    LeisureSchedule schedule;
 
     ///////////////////////
     // Public Properties //
     ///////////////////////
 
+    public int Cost { get; private set; }
     public CityPart.PLACE CityPlace { get; private set; }
     // Type of activity
     public TYPE LeisureType { get; private set; }
     public PLACE LeisurePlace { get; private set; }
-    public Index Satisfaction { get; private set; }
+    public ConditionableIndex Satisfaction { get; private set; }
+    public LeisureSchedule Schedule { get; private set; }
 
     //////////////////
     // Constructors //
     //////////////////
 
-
+    public Leisure(PLACE leisurePlace, AVAILABILITY availability, CityPart.PLACE cityPlace)
+    {
+        LeisureSchedule newSchedule = new LeisureSchedule(Global.Values.leisureOpening[(int)leisurePlace],
+            Global.Values.leisureOpenedTime[(int)availability, (int)leisurePlace],
+            Global.Values.leisureTime[(int)leisurePlace]);
+        float satisfactionValue = Global.Values.leisureSatisfaction[(int)leisurePlace];
+        int cost = Global.Values.leisureCost[(int)leisurePlace];
+        SetInitialValues(leisurePlace, newSchedule, satisfactionValue, cost, availability, cityPlace);
+    }
         
     //////////////////////
     // Auxiliar Methods //
     //////////////////////
 
-    void SetValues()
+    void SetInitialValues(PLACE leisurePlace, LeisureSchedule schedule, float satisfactionValue, int cost,
+        AVAILABILITY availability, CityPart.PLACE cityPlace)
     {
-
+        Cost = cost;
+        LeisurePlace = leisurePlace;
+        Schedule = schedule;
+        this.availability = availability;
+        LeisurePlace = leisurePlace;
+        switch (leisurePlace)
+        {
+            case PLACE.CINEMA: LeisureType = TYPE.SHOW; break;
+            case PLACE.PARK: LeisureType = TYPE.CALM; break;
+            case PLACE.GYM: LeisureType = TYPE.SPORT; break;
+            case PLACE.DISCO: LeisureType = TYPE.PARTY; break;
+            default: LeisureType = TYPE.CALM; break;
+        }
+        this.availability = availability;
+        Satisfaction = new ConditionableIndex("Satisfacción", "Representa como de satisfactorio es ir a " + Global.Names.leisurePlaces[(int)leisurePlace]
+            + " en el barrio " + Global.Names.cityPart[(int)cityPlace], satisfactionValue);
+        CityPlace = cityPlace;
     }
 
     ////////////////////
     // Public Methods //
     ////////////////////
 
-    public int GetCost() => baseCost;
-    public void SetCost(int newCost) => this.baseCost = newCost;
+    public void SetAvailability(AVAILABILITY newAvailability)
+    {
+        this.availability = newAvailability;
+        Schedule = new LeisureSchedule(Global.Values.leisureOpening[(int)LeisurePlace],
+            Global.Values.leisureOpenedTime[(int)availability, (int)LeisurePlace],
+            Global.Values.leisureTime[(int)LeisurePlace]);
+    }
     public AVAILABILITY GetAvailability() => availability;
-    public void SetAvailability(AVAILABILITY newAvailability) => this.availability = newAvailability;
-    public LeisureSchedule GetSchedule() => schedule;
-    public void SetSchedule(LeisureSchedule newSchedule) => this.schedule = newSchedule;
 
 }

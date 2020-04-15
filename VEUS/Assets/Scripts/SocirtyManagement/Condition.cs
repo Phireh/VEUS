@@ -12,6 +12,11 @@ using System.Collections.Generic;
 /// </summary>
 public abstract class Condition
 {
+    ///////////////////////
+    // Private Variables //
+    ///////////////////////
+
+    protected static int idCounter = 0;
 
     ///////////////////////
     // Public Properties //
@@ -22,6 +27,13 @@ public abstract class Condition
         get { return IsSatisfied(); } 
         private set { return; } 
     }
+    public int ID { get; private set; }
+
+    //////////////////
+    // Constructors //
+    //////////////////
+
+    public Condition() { ID = idCounter++; }
 
     //////////////////////
     // Auxiliar Methods //
@@ -39,6 +51,7 @@ public abstract class Condition
     /// <returns>True if the condition is satisfied. False otherwise</returns>
     public abstract bool ApplyCondition();
 
+    public override string ToString() => "Condición[" + ID + "](" + Satisfied + ")";
 }
 
 /// <summary>
@@ -51,15 +64,61 @@ public abstract class IndexCondition : Condition
     ///////////////////////
 
     public Index Conditioner { get; private set; }
+    public Index.STATE TargetState { get; private set; }
 
     //////////////////
     // Constructors //
     //////////////////
 
-    public IndexCondition(Index conditioner)
+    public IndexCondition(Index conditioner, Index.STATE targetState) : base()
     {
         Conditioner = conditioner;
+        TargetState = targetState;
     }
+
+    ////////////////////
+    // Public Methods //
+    ////////////////////
+
+    public override string ToString() => base.ToString() + " | Índice condicionante[" + Conditioner.ID + "] : TargetState(" + TargetState + ")";
+
+    //////////////////////
+    // Abstract Methods //
+    //////////////////////
+
+    protected override abstract bool IsSatisfied();
+    public override abstract bool ApplyCondition();
+}
+
+/// <summary>
+/// This kind of conditions have an Object's attribute as the conditioner
+/// </summary>
+/// <typeparam name="T">Type of the conditioner atributeiu</typeparam>
+public abstract class AttributeCondition<T> : Condition
+{
+
+    ///////////////////////
+    // Private Variables //
+    ///////////////////////
+
+    protected Func<T> conditionerGetter;
+    protected T conditionerTriggerValue;
+
+    //////////////////
+    // Constructors //
+    //////////////////
+
+    public AttributeCondition(Func<T> conditionerGetter, T conditionerTriggerValue) : base()
+    {
+        this.conditionerGetter = conditionerGetter;
+        this.conditionerTriggerValue = conditionerTriggerValue;
+    }
+
+    ////////////////////
+    // Public Methods //
+    ////////////////////
+
+    public override string ToString() => base.ToString() + " | Atributo condicionante[" + typeof(T) + "]" + " : TriggerValue(" + conditionerTriggerValue + ")";
 
     //////////////////////
     // Abstract Methods //
@@ -79,18 +138,16 @@ public abstract class IndexToIndexCondition : IndexCondition
     // Public Properties //
     ///////////////////////
 
-    public Index Conditioned { get; private set; }
-    public Index.STATE TargetState { get; private set; }
+    public Index Affected { get; private set; }
     public Index.CHANGE Change { get; private set; }
 
     //////////////////
     // Constructors //
     //////////////////
 
-    public IndexToIndexCondition(Index conditioner, Index conditioned, Index.STATE state, Index.CHANGE change) : base(conditioner)
+    public IndexToIndexCondition(Index conditioner, Index affected, Index.STATE state, Index.CHANGE change) : base(conditioner, state)
     {
-        Conditioned = conditioned;
-        TargetState = state;
+        Affected = affected;
         Change = change;
     }
 
@@ -108,42 +165,13 @@ public abstract class IndexToIndexCondition : IndexCondition
     {
         if (Satisfied)
         {
-            Conditioned.ChangeIndexValue(Change);
+            Affected.ChangeIndexValue(Change);
             return true;
         }
         return false;
     }
-}
 
-/// <summary>
-/// This kind of conditions have an Object's attribute as the conditioner
-/// </summary>
-public abstract class AttributeCondition<T> : Condition
-{
-
-    ///////////////////////
-    // Private Variables //
-    ///////////////////////
-
-    protected Func<T> conditionerGetter;
-    protected T conditionerTriggerValue;
-
-    //////////////////
-    // Constructors //
-    //////////////////
-
-    public AttributeCondition(Func<T> conditionerGetter, T conditionerTriggerValue)
-    {
-        this.conditionerGetter = conditionerGetter;
-        this.conditionerTriggerValue = conditionerTriggerValue;
-    }
-
-    //////////////////////
-    // Abstract Methods //
-    //////////////////////
-
-    protected override abstract bool IsSatisfied();
-    public override abstract bool ApplyCondition();
+    public override string ToString() => base.ToString() + " | Índice Afectado[" + Affected.ID + "](" + Change + ")";
 }
 
 /// <summary>
@@ -155,19 +183,25 @@ public abstract class AttributeToAtributeCondition<T, V> : AttributeCondition<T>
     // Private Variables //
     ///////////////////////
 
-    Action<V> conditionedSetter;
-    V conditionedResultValue;
+    protected Action<V> affectedSetter;
+    protected V affectedResultValue;
 
     //////////////////
     // Constructors //
     //////////////////
 
-    public AttributeToAtributeCondition(Func<T> conditionerGetter, Action<V> conditionedSetter,
-        T conditionerTriggerValue, V conditionedResultValue) : base(conditionerGetter, conditionerTriggerValue)
+    public AttributeToAtributeCondition(Func<T> conditionerGetter, Action<V> affectedSetter,
+        T conditionerTriggerValue, V affectedResultValue) : base(conditionerGetter, conditionerTriggerValue)
     {
-        this.conditionedSetter = conditionedSetter;
-        this.conditionedResultValue = conditionedResultValue;
+        this.affectedSetter = affectedSetter;
+        this.affectedResultValue = affectedResultValue;
     }
+
+    ////////////////////
+    // Public Methods //
+    ////////////////////
+
+    public override string ToString() => base.ToString() + " | Atributo Afectado[" + typeof(T) + "]" + " : ValorReslutado(" + affectedResultValue + ")";
 
     //////////////////////
     // Abstract Methods //
@@ -188,19 +222,25 @@ public abstract class IndexToAttributeCondition<T> : IndexCondition
     // Private Variables //
     ///////////////////////
 
-    protected Action<T> conditionedSetter;
-    protected T conditionedResultValue;
+    protected Action<T> affectedSetter;
+    protected T affectedResultValue;
 
     //////////////////
     // Constructors //
     //////////////////
 
-    public IndexToAttributeCondition(Index conditioner, Action<T> conditionedSetter, T conditionedResultValue)
-        : base(conditioner)
+    public IndexToAttributeCondition(Index conditioner, Index.STATE state, Action<T> affectedSetter, T affectedResultValue)
+        : base(conditioner, state)
     {
-        this.conditionedSetter = conditionedSetter;
-        this.conditionedResultValue = conditionedResultValue;
+        this.affectedSetter = affectedSetter;
+        this.affectedResultValue = affectedResultValue;
     }
+
+    ////////////////////
+    // Public Methods //
+    ////////////////////
+
+    public override string ToString() => base.ToString() + " | Atributo Afectado[" + typeof(T) + "]" + " : ValorReslutado(" + affectedResultValue + ")";
 
     //////////////////////
     // Abstract Methods //
@@ -220,17 +260,26 @@ public abstract class AttributeToIndexCondition<T> : AttributeCondition<T>
     // Private Variables //
     ///////////////////////
 
-    public Index Conditioned { get; private set; }
+    public Index Affected { get; private set; }
+    public Index.CHANGE Change { get; private set; }
+
 
     //////////////////
     // Constructors //
     //////////////////
 
-    public AttributeToIndexCondition(Func<T> conditionerGetter, T conditionerTriggerValue, Index conditioned)
+    public AttributeToIndexCondition(Func<T> conditionerGetter, T conditionerTriggerValue, Index affected, Index.CHANGE change)
         : base(conditionerGetter, conditionerTriggerValue)
     {
-        Conditioned = conditioned;
+        Affected = affected;
+        Change = change;
     }
+
+    ////////////////////
+    // Public Methods //
+    ////////////////////
+
+    public override string ToString() => base.ToString() + " | Índice Afectado[" + Affected.ID + "](" + Change + ")";
 
     //////////////////////
     // Abstract Methods //
@@ -268,7 +317,7 @@ public class IndexToIndexStateCondition : IndexToIndexCondition
     // Auxiliar Methods //
     //////////////////////
 
-    protected override bool IsSatisfied() { return Conditioned.GetIndexState() == TargetState; }
+    protected override bool IsSatisfied() { return Affected.GetIndexState() == TargetState; }
 }
 
 /// <summary>
@@ -295,7 +344,7 @@ public class IndexToIndexReachStateCondition : IndexToIndexCondition
     // Auxiliar Methods //
     //////////////////////
 
-    protected override bool IsSatisfied() { return Conditioned.GetIndexState() >= TargetState; }
+    protected override bool IsSatisfied() { return Affected.GetIndexState() >= TargetState; }
 }
 
 /// <summary>
@@ -311,36 +360,34 @@ public class IndexToIndexSinkStateCondition : IndexToIndexCondition
     /// Creates an IndexToIndexStateCondition
     /// </summary>
     /// <param name="conditioner">Conditioner Index</param>
-    /// <param name="conditioned">Conditioned Index</param>
+    /// <param name="affected">Conditioned Index</param>
     /// <param name="state">The state the conditioner has to reach to satisfy the condition</param>
     /// <param name="change"> The change that will be applied to the conditioned</param>
-    public IndexToIndexSinkStateCondition(Index conditioner, Index conditioned, Index.STATE state, Index.CHANGE change)
-        : base(conditioner, conditioned, state, change)
+    public IndexToIndexSinkStateCondition(Index conditioner, Index affected, Index.STATE state, Index.CHANGE change)
+        : base(conditioner, affected, state, change)
     { }
 
     //////////////////////
     // Auxiliar Methods //
     //////////////////////
 
-    protected override bool IsSatisfied() { return Conditioned.GetIndexState() <= TargetState; }
+    protected override bool IsSatisfied() { return Affected.GetIndexState() <= TargetState; }
 }
 
+/// <summary>
+/// This is a kind of AttributeToAttributeCondition where the condition is satisfied when de conditioner takes the TriggerValue
+/// </summary>
+/// <typeparam name="T">Type of the conditioner attribute</typeparam>
+/// <typeparam name="V">Type of the affected attribute</typeparam>
 public class AttributeToAtributeValueCondition<T, V> : AttributeToAtributeCondition<T, V>
 {
-    ///////////////////////
-    // Private Variables //
-    ///////////////////////
-
-    Action<V> conditionedSetter;
-    V conditionedResultValue;
-
     //////////////////
     // Constructors //
     //////////////////
 
-    public AttributeToAtributeValueCondition(Func<T> conditionerGetter, Action<V> conditionedSetter,
-        T conditionerTriggerValue, V conditionedResultValue)
-        : base(conditionerGetter, conditionedSetter, conditionerTriggerValue, conditionedResultValue)
+    public AttributeToAtributeValueCondition(Func<T> conditionerGetter, Action<V> affectedSetter,
+        T conditionerTriggerValue, V affectedResultValue)
+        : base(conditionerGetter, affectedSetter, conditionerTriggerValue, affectedResultValue)
     { }
 
     //////////////////////
@@ -360,7 +407,7 @@ public class AttributeToAtributeValueCondition<T, V> : AttributeToAtributeCondit
     {
         if (Satisfied)
         {
-            conditionedSetter(conditionedResultValue);
+            affectedSetter(affectedResultValue);
             return true;
         }
         return false;

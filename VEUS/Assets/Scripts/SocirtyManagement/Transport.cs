@@ -13,10 +13,11 @@ public class Transport
     /// </summary>
     public enum TYPE
     {
-        ROAD = 0,
-        CYCLE_LANE = 1,
-        STREET = 2,
-        SUBWAY = 3
+        NONE = 0,
+        ROAD = 1,
+        CYCLE_LANE = 2,
+        STREET = 3,
+        SUBWAY = 4
     }
     /// <summary>
     /// Amplified capacity in comparison with the original
@@ -30,11 +31,11 @@ public class Transport
     /// <summary>
     /// State of the way of transport. A bad state implies less security and speed
     /// </summary>
-    public enum MAINTENANCE
+    public enum ENHANCEMENTS
     {
         NONE = 0,
-        PARTIAL = 1,
-        COMPLEATe = 2
+        FEW = 1,
+        MANY = 2
     }
 
     ///////////////////////
@@ -42,28 +43,23 @@ public class Transport
     ///////////////////////
 
     float baseSpeed;
-    int baseCapacity;
-    Index speedIndex;
     EXPANSION expansion;
-    MAINTENANCE maintenance;
+    ENHANCEMENTS enhancements;
 
     ///////////////////////
     // Public Properties //
     ///////////////////////
 
+    public int Capacity { get; private set; }
     public TYPE TransportType { get; private set; }
     public CityPart.PLACE CityPlace { get; private set; }
+    public DependentIndex SpeedIndex { get; private set; }
     public DependentIndex Wear { get; private set; }
     public DependentIndex Safety { get; private set; }
     public DependentIndex Polluting { get; private set; }
-    public int Capacity
-    {
-        get { return GetCapacity(); }
-        private set { if (value > 0) baseCapacity = value; }
-    }
     public float Speed
     {
-        get { return baseSpeed * speedIndex.Value; }
+        get { return baseSpeed * SpeedIndex.Value; }
         private set { if (value > 0) baseSpeed = value; }
     }
 
@@ -71,10 +67,16 @@ public class Transport
     // Constructors //
     //////////////////
 
-    public Transport(TYPE transportType, float safetyValue, float wearValue, int capacity, float maxSpeed, float speedIndexValue,
-        float pollutingValue, CityPart.PLACE cityPlace)
+    public Transport(TYPE transportType, EXPANSION expansion, ENHANCEMENTS enhancements, CityPart.PLACE cityPlace)
     {
-        SetInitialValues(transportType, safetyValue, wearValue, capacity, maxSpeed, speedIndexValue, pollutingValue, cityPlace);
+        float safetyValue = Global.Values.transportSafety[(int)transportType];
+        float wearValue = 0f;
+        int capacity = Global.Values.transportCapacity[(int)expansion, (int)transportType];
+        float maxSpeed = Global.Values.transportMaxSpeed[(int)enhancements, (int)transportType];
+        float speedIndexValue = 1f;
+        float pollutingValue = Global.Values.transportPollution[(int) transportType];
+        SetInitialValues(transportType, safetyValue, wearValue, capacity, maxSpeed, speedIndexValue,
+            pollutingValue, expansion, enhancements, cityPlace);
     }
 
     //////////////////////
@@ -82,35 +84,22 @@ public class Transport
     //////////////////////
 
     void SetInitialValues(TYPE transportType, float safetyValue, float wearValue, int capacity, float maxSpeed, float speedIndexValue,
-        float pollutingValue, CityPart.PLACE cityPlace)
+        float pollutingValue, EXPANSION expansion, ENHANCEMENTS enhancements, CityPart.PLACE cityPlace)
     {
         CityPlace = cityPlace;
+        this.expansion = expansion;
+        this.enhancements = enhancements;
         TransportType = transportType;
-        Safety = new DependentIndex("Seguridad", "Representa como de seguro es desplazarse por " + GlobalNames.transport[(int)transportType]
-            + " en el barrio " + GlobalNames.cityPart[(int)cityPlace], safetyValue);
+        Safety = new DependentIndex("Seguridad", "Representa como de seguro es desplazarse por " + Global.Names.transport[(int)transportType]
+            + " en el barrio " + Global.Names.cityPart[(int)cityPlace], safetyValue);
         Polluting = new DependentIndex("Contaminante", "Representa como de contaminante es despalzarse por "
-            + GlobalNames.transport[(int)transportType] + " en el barrio " + GlobalNames.cityPart[(int)cityPlace], pollutingValue);
+            + Global.Names.transport[(int)transportType] + " en el barrio " + Global.Names.cityPart[(int)cityPlace], pollutingValue);
         Wear = new DependentIndex("Desgaste", "Representa como de desgastado está el transporte por "
-            + GlobalNames.transport[(int)transportType] + " en el barrio " + GlobalNames.cityPart[(int)cityPlace], wearValue);
+            + Global.Names.transport[(int)transportType] + " en el barrio " + Global.Names.cityPart[(int)cityPlace], wearValue);
         Capacity = capacity;
         Speed = maxSpeed;
-        speedIndex = new DependentIndex("Velocidad", "Representa que cantidad de la velocidad máxima es alcanzable viajando por "
-            + GlobalNames.transport[(int)transportType] + " en el barrio " + GlobalNames.cityPart[(int)cityPlace], speedIndexValue);
-    }
-
-    int GetCapacity()
-    {
-        switch (expansion)
-        {
-            case EXPANSION.NONE:
-                expansion = EXPANSION.SMALL;
-                return baseCapacity ;
-            case EXPANSION.SMALL:
-                return baseCapacity * 2;
-            case EXPANSION.LARGE:
-            default:
-                return baseCapacity * 3;
-        }
+        SpeedIndex = new DependentIndex("Velocidad", "Representa que cantidad de la velocidad máxima es alcanzable viajando por "
+            + Global.Names.transport[(int)transportType] + " en el barrio " + Global.Names.cityPart[(int)cityPlace], speedIndexValue);
     }
 
     ////////////////////
@@ -118,8 +107,15 @@ public class Transport
     ////////////////////
 
     public EXPANSION GetExpansionState() => this.expansion;
-    public MAINTENANCE GetMaintenanceState() => this.maintenance;
-    public void SetExpansionState(EXPANSION newExpansionState) => this.expansion = newExpansionState;
-    public void SetMaintenanceState(MAINTENANCE newMaintenanceState) => this.maintenance = newMaintenanceState;
-
+    public ENHANCEMENTS GetEnhancements() => this.enhancements;
+    public void SetExpansionState(EXPANSION newExpansionState)
+    {
+        this.expansion = newExpansionState;
+        Capacity = Global.Values.transportCapacity[(int)expansion, (int)TransportType];
+    }
+    public void SetEnhancements(ENHANCEMENTS newMaintenanceState)
+    {
+        this.enhancements = newMaintenanceState;
+        Speed = Global.Values.transportMaxSpeed[(int)enhancements, (int)TransportType];
+    }
 }

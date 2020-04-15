@@ -35,63 +35,102 @@ public abstract class Dependency
         get { return GetRealInfluence(); }
         private set { return; }
     }
-    public Index Influencer { get; private set; }
+    public Index From { get; private set; }
+    public Index To { get; private set; }
 
     //////////////////
     // Constructors //
     //////////////////
 
-    public Dependency(Index influencer, int influence)
+    public Dependency(Index from, Index to, int influence)
     {
-        Influencer = influencer;
+        From = from;
+        To = to;
         Influence = influence;
     }
+
+    //////////////////////
+    // Abstract Methods //
+    //////////////////////
+
+    protected abstract float GetRealInfluence();
 
     ////////////////////
     // Public Methods //
     ////////////////////
+    
+    public float ApplyInfluence()
+    {
+        float realInfluece = GetRealInfluence();
+        To.Value += GetRealInfluence();
+        return realInfluece;
+    }
 
-    protected abstract float GetRealInfluence();
+    public override string ToString() => "De " + From.Name + "[]" + From.ID +"(" + influence + ") A " + To.Name + "[]" + To.ID + "InfluenciaReal(" + RealInfluence + ")";
 }
 
 public class SubstractionDependency : Dependency
 {
     protected override float GetRealInfluence()
     {
-        return - (Influence * Influencer.Value) / 100f;
+        return - (Influence * From.Value) / 100f;
     }
 
-    public SubstractionDependency(Index influencer, int influence) : base(influencer, influence) { }
+    public SubstractionDependency(Index from, Index to, int influence) : base(from, to, influence) { }
+
+    ////////////////////
+    // Public Methods //
+    ////////////////////
+
+    public override string ToString() => base.ToString() + " | Substracción";
 }
 
 public class AdditionDependency : Dependency
 {
     protected override float GetRealInfluence()
     {
-        return (Influence * Influencer.Value) / 100f;
+        return (Influence * From.Value) / 100f;
     }
 
-    public AdditionDependency(Index influencer, int influence) : base(influencer, influence) { }
+    public AdditionDependency(Index from, Index to, int influence) : base(from, to, influence) { }
+
+    ////////////////////
+    // Public Methods //
+    ////////////////////
+
+    public override string ToString() => base.ToString() + " | Adición";
 }
 
 public class ReverseSubstractionDependency : Dependency
 {
     protected override float GetRealInfluence()
     {
-        return - (Influence - Influence * Influencer.Value) / 100f;
+        return - (Influence - Influence * From.Value) / 100f;
     }
 
-    public ReverseSubstractionDependency(Index influencer, int influence) : base(influencer, influence) { }
+    public ReverseSubstractionDependency(Index from, Index to, int influence) : base(from, to, influence) { }
+
+    ////////////////////
+    // Public Methods //
+    ////////////////////
+
+    public override string ToString() => base.ToString() + " | Substracción Inversa";
 }
 
 public class ReverseAdditionDependency : Dependency
 {
     protected override float GetRealInfluence()
     {
-        return (Influence - Influence * Influencer.Value) / 100f;
+        return (Influence - Influence * From.Value) / 100f;
     }
 
-    public ReverseAdditionDependency(Index influencer, int influence) : base(influencer, influence) { }
+    public ReverseAdditionDependency(Index from, Index to, int influence) : base(from, to, influence) { }
+
+    ////////////////////
+    // Public Methods //
+    ////////////////////
+
+    public override string ToString() => base.ToString() + " | Adición Inversa";
 }
 
 public class SameTendencyDependency : Dependency
@@ -99,11 +138,17 @@ public class SameTendencyDependency : Dependency
     protected override float GetRealInfluence()
     {
         float ri = 0f;
-        if (Influencer.Value > 0.5f) ri = 1f;
-        else if (Influencer.Value < 0.5f) ri = -1f;
-        ri *= Influencer.Value * Influence / 100f;
+        if (From.Value > 0.5f) ri = 1f;
+        else if (From.Value < 0.5f) ri = -1f;
+        ri *= From.Value * Influence / 100f;
         return ri;
     }
 
-    public SameTendencyDependency(Index influencer, int influence) : base(influencer, influence) { }
+    public SameTendencyDependency(Index from, Index to, int influence) : base(from, to, influence) { }
+
+    ////////////////////
+    // Public Methods //
+    ////////////////////
+
+    public override string ToString() => base.ToString() + " | Misma Tendencia";
 }
