@@ -7,6 +7,9 @@ using UnityEngine;
 
 public class LeisureDisplayController : MonoBehaviour
 {
+    int initiallized = 0;
+
+    Leisure displayedLeisure;
     public TextMeshProUGUI leisurePlace;
 
     public TextMeshProUGUI cost;
@@ -21,6 +24,9 @@ public class LeisureDisplayController : MonoBehaviour
     // Start is called before the first frame update
     public void SetData(Leisure leisure)
     {
+        initiallized = 0;
+        displayedLeisure = leisure;
+
         leisurePlace.text = leisure.LeisurePlace.ToString();
 
         cost.text = leisure.Cost.ToString();
@@ -39,8 +45,15 @@ public class LeisureDisplayController : MonoBehaviour
         indexBar.GetComponent<IndexBarController>().IndexID = leisure.Satisfaction.ID;
     }
 
+    void SetData() => SetData(displayedLeisure);
+
     public void OnAvailabilityValueChange(int newValue)
     {
-        Debug.Log("New Extension Value Selected: " + (Job.EXTENSION)newValue);
+        if (initiallized++ > 0) SocietyDataInterface.AddLeisureAvailabilityStateChange(displayedLeisure.CityPlace, displayedLeisure.LeisurePlace, (Leisure.AVAILABILITY)newValue);
+    }
+
+    void Update()
+    {
+        if (initiallized > 0) SetData();
     }
 }

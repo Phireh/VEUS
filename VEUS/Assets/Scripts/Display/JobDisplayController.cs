@@ -6,7 +6,11 @@ using TMPro;
 using UnityEngine;
 
 public class JobDisplayController : MonoBehaviour
-{public TextMeshProUGUI jobType;
+{
+    Job displayedJob;
+    int initiallized = 0;
+
+    public TextMeshProUGUI jobType;
 
     public TextMeshProUGUI quantityOfOffers;
     public TextMeshProUGUI salary;
@@ -23,6 +27,9 @@ public class JobDisplayController : MonoBehaviour
     // Start is called before the first frame update
     public void SetData(Job job)
     {
+        initiallized = 0;
+        displayedJob = job;
+
         jobType.text = job.JobType.ToString();
 
         quantityOfOffers.text = job.Quantity.ToString();
@@ -56,16 +63,23 @@ public class JobDisplayController : MonoBehaviour
         indexBar.GetComponent<IndexBarController>().IndexID = job.RequieredEffort.ID;
     }
 
+    void SetData() => SetData(displayedJob);
+
     public void OnExtensioValueChange(int newValue)
     {
-        Debug.Log("New Extension Value Selected: " + (Job.EXTENSION)newValue);
+        if (initiallized++ > 2) SocietyDataInterface.AddIndustryExtensionChange(displayedJob.CityPlace, displayedJob.JobType, (Job.EXTENSION)newValue);
     }
     public void OnDurationValueChange(int newValue)
     {
-        Debug.Log("New Duration Value Selected: " + (Job.EXTENSION)newValue);
+        if (initiallized++ > 2) SocietyDataInterface.AddIndustryContractsDurationChange(displayedJob.CityPlace, displayedJob.JobType, (Job.DURATION)newValue);
     }
     public void OnTimeDemandValueChange(int newValue)
     {
-        Debug.Log("New Time Demand Value Selected: " + (Job.EXTENSION)newValue);
+        if (initiallized++ > 2) SocietyDataInterface.AddIndustryTimeDemandChange(displayedJob.CityPlace, displayedJob.JobType, (Job.TIME_DEMAND)newValue);
+    }
+
+    void Update()
+    {
+        if (initiallized > 2) SetData();
     }
 }

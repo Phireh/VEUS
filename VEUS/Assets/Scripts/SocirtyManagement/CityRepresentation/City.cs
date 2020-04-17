@@ -5,10 +5,10 @@ using System.Collections.Generic;
 public class City
 {
     public CityPart[] CityParts { get; private set; }
-    public ChangesManagement changes { get; private set; }
+    public ChangesManagement Changes { get; private set; }
 
 public City() {
-        changes = new ChangesManagement();
+        Changes = new ChangesManagement();
         CityParts = new CityPart[Enum.GetNames(typeof(CityPart.PLACE)).Length];
         CityParts[(int)CityPart.PLACE.CENTER] = new CityPart(CityPart.PLACE.CENTER,
             CityPart.POPULATION.LARGE, Citizen.ECONOMIC_CLASS.MIDDLE,

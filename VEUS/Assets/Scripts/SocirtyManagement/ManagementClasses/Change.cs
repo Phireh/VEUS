@@ -22,5 +22,21 @@ public class ValueChange<T> : Change
     }
 
     public override void ApplyChange() => Setter(NewValue);
-    public override string ToString() => "Setter: " + Setter.ToString() + "Value: " + NewValue.ToString();
+    public override string ToString() => "Setter: " + Setter.ToString() + " | Value: " + NewValue.ToString();
+}
+
+public class IndexChange : Change
+{
+    public Index Target { get; private set; }
+    public Index.CHANGE Change { get; private set; }
+    public IndexChange(Index target, Index.CHANGE change) : base()
+    {
+        Target = target;
+        Change = change;
+    }
+    public override void ApplyChange()
+    {
+        Target.ChangeIndexValue(Change);
+    }
+    public override string ToString() => "Target:\n" + Target + "\nChange: " + Change;
 }

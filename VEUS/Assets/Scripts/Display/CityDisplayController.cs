@@ -24,7 +24,12 @@ public class CityDisplayController : MonoBehaviour
         //////////////////////////////////////
         SocietyManagement.Init();
         CitytoRepresent = SocietyManagement.CityOfToday;
+        StartCoroutine(DelayedInit());
+    }
 
+    IEnumerator DelayedInit()
+    {
+        yield return new WaitForSeconds(1f);
         centerPanel.GetComponent<CityPartDisplayController>().SetData(CitytoRepresent.CityParts[(int)CityPart.PLACE.CENTER]);
         northPanel.GetComponent<CityPartDisplayController>().SetData(CitytoRepresent.CityParts[(int)CityPart.PLACE.NORTH]);
         eastPanel.GetComponent<CityPartDisplayController>().SetData(CitytoRepresent.CityParts[(int)CityPart.PLACE.EAST]);
@@ -48,5 +53,13 @@ public class CityDisplayController : MonoBehaviour
             Input.GetAxis("Vertical") * standardSize / currentSize * cameraSesitivity);
         mycam.transform.position = new Vector3(vp.x, vp.y, -10);
         mycam.orthographicSize = currentSize;
+
+
+
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            SocietyManagement.ProcessDay();
+        }
     }
 }

@@ -21,6 +21,5 @@ public class TransportSectorDisplayController : MonoBehaviour
         cycleLanePanel.GetComponent<TransportDisplayController>().SetData(ts.Transports[(int)Transport.TYPE.CYCLE_LANE]);
         subwayPanel.GetComponent<TransportDisplayController>().SetData(ts.Transports[(int)Transport.TYPE.SUBWAY]);
         roadPanel.GetComponent<TransportDisplayController>().SetData(ts.Transports[(int)Transport.TYPE.ROAD]);
-
     }
 }

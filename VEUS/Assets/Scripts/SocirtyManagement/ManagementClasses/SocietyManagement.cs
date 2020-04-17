@@ -14,7 +14,11 @@ public static class SocietyManagement
         dayByDayCity = new List<City>();
         dayByDayCity.Add(new City());
         CityOfToday = dayByDayCity[0];
-        //Global.Methods.PrintInfo("The following city parts belong to the city:");
-        //CityOfToday.DebugPrint();
+    }
+
+    public static void ProcessDay()
+    {
+        int sum = CityOfToday.Changes.ApplyAllChanges();
+        Debug.Log(sum + " changes applied");
     }
 }
