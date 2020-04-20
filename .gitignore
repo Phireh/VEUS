@@ -119,3 +119,6 @@ Temporary Items
 
 ### VSCODE GITIGNORE ###
 .vscode
+
+### LOCAL REPO CONFIG GITIGNORE ###
+.localgitconfig
