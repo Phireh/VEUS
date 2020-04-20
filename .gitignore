@@ -113,6 +113,9 @@ Temporary Items
 .nfs*
 
 ### EMACS AND VIM GITIGNORE ###
-\#*\#
-.\#*
+\#*#
+.#*
 *~
+
+### VSCODE GITIGNORE ###
+.vscode
