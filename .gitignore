@@ -113,6 +113,12 @@ Temporary Items
 .nfs*
 
 ### EMACS AND VIM GITIGNORE ###
-\#*\#
-.\#*
+\#*#
+.#*
 *~
+
+### VSCODE GITIGNORE ###
+.vscode
+
+### LOCAL REPO CONFIG GITIGNORE ###
+.localgitconfig
