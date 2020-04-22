@@ -1,9 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class TargetIndicator : MonoBehaviour
 {
+    public GameObject go;
+    public GameObject nextTarget;
+    public GameObject nextGoal;
     public Transform target;
     public float HideDistance;
 
@@ -17,6 +21,9 @@ public class TargetIndicator : MonoBehaviour
             {
                 child.gameObject.SetActive(false);
             }
+            go.SetActive(false);
+            nextTarget.SetActive(true);
+            nextGoal.SetActive(true);
         }
         else
         {
