@@ -5,6 +5,10 @@ using UnityEngine;
 public class NextTarget : MonoBehaviour
 {
     public Transform target;
+    public GameObject actualTarget;
+    public GameObject nextTarget;
+    public GameObject actualGoal;
+    public GameObject nextGoal;
     public float HideDistance;
     public GameObject lastTarget;
 
@@ -20,6 +24,10 @@ public class NextTarget : MonoBehaviour
                 {
                     child.gameObject.SetActive(false);
                 }
+                actualTarget.SetActive(false);
+                nextTarget.SetActive(true);
+                nextGoal.SetActive(true);
+                actualGoal.SetActive(false);
             }
             else
             {

@@ -8,7 +8,7 @@ ScriptedImporter:
   assetBundleName: 
   assetBundleVariant: 
   script: {fileID: 11500000, guid: 94073015eacc34c1d8fc6786e43d60ca, type: 3}
-  baseLanguageID: 
+  baseLanguageID: es-ES
   stringIDs:
   - Peluquera_1-Peluquera-0
   - Peluquera_1-Peluquera-1
@@ -28,5 +28,6 @@ ScriptedImporter:
   compilationStatus: 1
   isSuccesfullyCompiled: 1
   compilationErrorMessage: 
-  baseLanguage: {instanceID: 0}
+  baseLanguage: {fileID: 7128917941130120860, guid: 7e14510740d4a134b8054283fd1b96d2,
+    type: 3}
   localizations: []

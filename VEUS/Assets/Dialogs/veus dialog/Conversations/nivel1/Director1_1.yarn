@@ -27,7 +27,7 @@ position: 593,117
 title: Director.Aliado
 tags: 
 colorID: 0
-position: 196,497
+position: 197,456
 ---
 Director: Perfecto
 Director: Que te parece si ponemos en el periodico
@@ -38,18 +38,18 @@ Director: Hablalo con tus consejeros o concejales,ya veras como esa peluquera ac
 title: Director.NoAliado
 tags: 
 colorID: 0
-position: 594,495
+position: 587,442
 ---
 Director: Entiendo.. 
 Director: Es una pena, ibamos a ser grandes aliados
 Director: Buena suerte con sus decisiones, no la cague como ahora
 Alcaldo: Bueno, tampoco ha sido para tanto, es igual, buen dia!
-Directo: Tampoco será para tanto cuando tu rival político se entere de toda esta historia
+Directo: Tampoco sera para tanto cuando tu rival politico se entere de toda esta historia
 ===
 title: Director.Exit
 tags: 
 colorID: 0
-position: 969,495
+position: 947,434
 ---
 Director: Adios alcaldo!
 ===

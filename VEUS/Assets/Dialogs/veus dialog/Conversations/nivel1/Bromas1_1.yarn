@@ -1,0 +1,58 @@
+title: Bromas
+tags: 
+colorID: 0
+position: 461,111
+---
+<<if visited("Bromas") is false>>
+    Alcaldo: Hola muchacho, le puedo ayudar en algo? 
+    Bromas: Oh! Asi que tu eres el nuevo alcalde 
+    Bromas: Me presento soy el bromas, una persona super amada en la ciudad
+    Bromas: Te vendria bien tenerme a tu lado en tus comienzos, yo te podria aconsejar je je je
+
+<<else>>
+
+    Alcaldo: ¿Te vas a quedar todo el dia en la puerta del ayuntamiento? 
+    Bromas: Habla con la peluquera y despues me ire
+<<endif>>
+
+<<if not visited("Bromas.eresPayaso")>>
+    [[Vaya, eres muy amable, pero vaya pintas me llevas no? Pareces un payaso|Bromas.eresPayaso]] 
+<<endif>>
+
+<<if $bromas_warning and not visited("Bromas.Pelu")>>
+    [[Esa mujer es despreciable, que mala persona es|Bromas.Pelu]] 
+<<endif>>
+
+[[Mmmmmmm creo que me voy a ir|Bromas.Exit]]
+===
+title: Bromas.eresPayaso
+tags: 
+colorID: 0
+position: 483,401
+---
+Bromas: PERO QUE ME ESTAS LLAMANDO!!!
+Bromas: Uy perdon, tal vez he sido un poco maleducado
+Bromas: De todas maneras, si quieres tener una buena fama en el pueblo ve a hablar con la peluquera je je je
+<<set $should_see_peluquera to true>>
+<<if visited("Peluquera") is true>>
+    Alcaldo: Ya he hablado con la peluquera pero no estaba muy receptiva
+    Bromas: Jajajaja vas a tener que mejorar mucho sino quieres tener los dias contados
+<<endif>>
+===
+title: Bromas.Exit
+tags: 
+colorID: 0
+position: 202,414
+---
+Bromas: Alcaldo guapeton, tendras noticias mias pronto
+===
+title: Bromas.Pelu
+tags: 
+colorID: 0
+position: 768,401
+---
+<< set $see_director to true >> 
+Bromas: Como? Alcaldo? Hablando mal de sus ciudadanos
+Bromas: ESTE NO ES MI ALCALDE.
+Bromas: Se lo contare todo al director de la prensa je je je.
+===
