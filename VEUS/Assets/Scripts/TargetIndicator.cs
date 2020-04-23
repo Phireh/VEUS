@@ -8,6 +8,7 @@ public class TargetIndicator : MonoBehaviour
     public GameObject go;
     public GameObject nextTarget;
     public GameObject nextGoal;
+    public GameObject actualGoal;
     public Transform target;
     public float HideDistance;
 
@@ -24,6 +25,7 @@ public class TargetIndicator : MonoBehaviour
             go.SetActive(false);
             nextTarget.SetActive(true);
             nextGoal.SetActive(true);
+            actualGoal.SetActive(false);
         }
         else
         {
