@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Yarn.Unity;
 
 public class NextTarget : MonoBehaviour
 {
@@ -24,10 +25,10 @@ public class NextTarget : MonoBehaviour
                 {
                     child.gameObject.SetActive(false);
                 }
-                actualTarget.SetActive(false);
-                nextTarget.SetActive(true);
-                nextGoal.SetActive(true);
-                actualGoal.SetActive(false);
+                    actualTarget.SetActive(false);
+                    nextTarget.SetActive(true);
+                    nextGoal.SetActive(true);
+                    actualGoal.SetActive(false);
             }
             else
             {
@@ -39,5 +40,6 @@ public class NextTarget : MonoBehaviour
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
-    }
+    }     
 }
+

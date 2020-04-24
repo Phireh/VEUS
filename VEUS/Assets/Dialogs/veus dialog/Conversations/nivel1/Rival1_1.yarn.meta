@@ -1,0 +1,33 @@
+fileFormatVersion: 2
+guid: 6cb76973938b26145943c69c8fc44173
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 94073015eacc34c1d8fc6786e43d60ca, type: 3}
+  baseLanguageID: es-ES
+  stringIDs:
+  - Rival1_1-Rival.Pacto-0
+  - Rival1_1-Rival.NoPacto-1
+  - Rival1_1-Rival.Exit-2
+  - Rival1_1-Rival.Exit-3
+  - Rival1_1-Rival-4
+  - Rival1_1-Rival-5
+  - Rival1_1-Rival-6
+  - Rival1_1-Rival-7
+  - Rival1_1-Rival-8
+  - Rival1_1-Rival-9
+  - Rival1_1-Rival-10
+  - Rival1_1-Rival-11
+  - Rival1_1-Rival-12
+  - Rival1_1-Rival-13
+  - Rival1_1-Rival-14
+  compilationStatus: 1
+  isSuccesfullyCompiled: 1
+  compilationErrorMessage: 
+  baseLanguage: {fileID: 7128917941130120860, guid: 6cb76973938b26145943c69c8fc44173,
+    type: 3}
+  localizations: []

@@ -22,13 +22,14 @@ position: 593,117
     [[No creo que haya que actuar por que sea de esa manera|Director.NoAliado]] 
     <<endif>>
 <<endif>>
-[[Hasta luego!|Director.Exit]] 
+[[Hasta luego!|Director.Exit]]
 ===
 title: Director.Aliado
 tags: 
 colorID: 0
 position: 197,456
 ---
+<< set $see_concejal to true>> 
 Director: Perfecto
 Director: Que te parece si ponemos en el periodico
 Director: Que dais menos ayudas a los comercios para destinarlo al medio ambiente
@@ -40,6 +41,7 @@ tags:
 colorID: 0
 position: 587,442
 ---
+<< set $see_rival to true>> 
 Director: Entiendo.. 
 Director: Es una pena, ibamos a ser grandes aliados
 Director: Buena suerte con sus decisiones, no la cague como ahora

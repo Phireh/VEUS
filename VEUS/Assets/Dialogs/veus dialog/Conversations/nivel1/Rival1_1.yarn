@@ -1,0 +1,51 @@
+title: Rival.Pacto
+tags: 
+colorID: 0
+position: 181,432
+---
+<< set $see_concejalb to true>> 
+Rival politico: Muy bien hecho, ahora reunete con tus concejales a ver que te dicen
+===
+title: Rival.NoPacto
+tags: 
+colorID: 0
+position: 562,431
+---
+<< set $see_concejalc to true>> 
+Rival politico: Ya suponia que te ibas a negar, me lo voy a pasar muy bien en el siguiente pleno
+===
+title: Rival.Exit
+tags: 
+colorID: 0
+position: 927,423
+---
+Rival politico: Cuidese Alcaldo, no le esta haciendo bien la alcaldia
+Alcaldo: Y usted alegre ese cara anda, ya nos veremos
+===
+title: Rival
+tags: 
+colorID: 0
+position: 555,98
+---
+<<if visited("Rival") is false>>
+    Rival politico: Muy buenas alcalde, que le trae por aqui
+ <<else>>   
+    Rival politico: Y eso que viene tanto por aqui? No querra cambiarse de partido?
+<<endif>>
+
+<<if $see_rival is true>>
+    Alcaldo: Se que no quieres verme la cara pero necesito tu ayuda
+    Rival: Espera, espera, mi ayuda?
+    Alcaldo: Las cosas no estan yendo bien, la prensa y la peluquera estan en mi contra
+    Rival: Y quieres que haga oidos sordos verdad de todo lo que digan?
+    Rival: Vale, pero para ello tendras que bajarte el sueldo y el de todos tus concejales
+    Rival: Y además deberas destinar ese dinero a reformar las carreteras de la ciudad, que era una de las medidas de nuestro programa
+    <<if not visited("Rival.Pacto")>>
+    [[Es bastante duro pero veo bien el pacto|Rival.Pacto]] 
+    <<endif>>
+    <<if not visited("Rival.NoPacto")>>
+    [[Me parece excesivo, mi familia no me lo perdonaría|Rival.NoPacto]] 
+    <<endif>>
+<<endif>>
+[[Hasta luego!|Rival.Exit]]
+===
