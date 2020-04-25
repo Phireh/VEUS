@@ -4,25 +4,25 @@ colorID: 0
 position: 505,-26
 ---
 <<if visited("Peluquera") is false>>
-    Peluquera: ¿Quien eres y que quieres?
-    Alcaldo: Bu-buenas, soy el nuevo alcalde
-    Alcaldo: Venia a presentarme 
-    Peluquera: Aaaah si claro
-    Peluquera: Vete a tomar por culo
+    Peluquera: ¿Quié eres y qué quieres en mi negocio?
+    Alcaldo: Bu-buenas, soy el nuevo alcalde.
+    Alcaldo: Venía a presentarme 
+    Peluquera: Aaaah... Sí claro, claro.
+    Peluquera: Vete a tomar por culo.
  <<else>>   
-    Peluquera: Que te pires pesado
+    Peluquera: Que te pires, pesado.
 <<endif>>
 
 <<if $should_see_peluquera is true and $bromas_warning is false>>
-    Alcaldo: El bromas me dijo que me tenias que decir algo
-    Peluquera: Joder que pesadito estas hoy.
-    Peluquera: A ver, he escuchado que tienes una mujer y 3 chicos
-    Peluquera: Me gustaria que fueseis mis mejores clientes
-    Peluquera: Porque ya sabes, no creo que a la gente le guste las cosas que pueda decir de ti
-    Alcaldo: Que dices, si no sabes nada de mi
-    Peluquera: Aqui todo el mundo se entera de las cosas por mi
-    Peluquera: Tu decides alcaldito, mañana te pasas y pides cita para todos
+    Alcaldo: El Bromas me dijo que me tenias que decir algo.
+    Peluquera: Joder, macho. Qué pesadito estás hoy.
+    Peluquera: A ver, he escuchado que tienes una mujer y 3 chicos.
+    Peluquera: Me gustaría que fuéseis mis mejores clientes.
+    Peluquera: Porque ya sabes, no creo que a la gente le guste las cosas que pueda decir de ti.
+    Alcaldo: Si no sabes nada de mí.
+    Peluquera: Aquí todo el mundo se entera de las cosas por mí.
+    Peluquera: Tú decides, Alcaldito, mañana te pasas y pides cita para todos.
     <<set $bromas_warning to true>>
-    Alcaldo: Ya hablaremos chica, me marcho.
+    Alcaldo: Ya hablaremos.
 <<endif>>
 ===

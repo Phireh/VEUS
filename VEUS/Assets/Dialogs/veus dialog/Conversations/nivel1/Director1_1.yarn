@@ -4,25 +4,25 @@ colorID: 0
 position: 593,117
 ---
 <<if visited("Director") is false>>
-    Director prensa: Muy buenas alcaldo
-    Alcaldo: Buenas director, todo bien?
-    Director prensa: No te puedo dar exclusivas acerca de mi estado
-    Alcaldo: Mmmm, vale
+    Director prensa: Muy buenas, Alcaldo.
+    Alcaldo: Buenas, director... ¿todo bien?
+    Director prensa: No te puedo dar exclusivas acerca de mi estado.
+    Alcaldo: Mmmm, vale.
  <<else>>   
-    Director: Hasta luego alcaldo!
+    Director: ¡Hasta luego, alcaldo!
 <<endif>>
 
 <<if $see_director is true>>
-    Director: He oido que la peluquera ya ha hecho de las suyas
-    Director: Hay que bajarle los humos
+    Director: He oído que la peluquera ya ha hecho de las suyas.
+    Director: Hay que bajarle los humos a esa maruja...
     <<if not visited("Director.Aliado")>>
-    [[Estoy de acuerdo hay que hacer algo|Director.Aliado]] 
+    [[Estoy de acuerdo, hay que hacer algo. |Director.Aliado]] 
     <<endif>>
     <<if not visited("Director.NoAliado")>>
-    [[No creo que haya que actuar por que sea de esa manera|Director.NoAliado]] 
+    [[Déjala, es su forma de ser. |Director.NoAliado]] 
     <<endif>>
 <<endif>>
-[[Hasta luego!|Director.Exit]]
+[[¡Hasta luego!|Director.Exit]]
 ===
 title: Director.Aliado
 tags: 
@@ -30,11 +30,11 @@ colorID: 0
 position: 197,456
 ---
 << set $see_concejal to true>> 
-Director: Perfecto
-Director: Que te parece si ponemos en el periodico
-Director: Que dais menos ayudas a los comercios para destinarlo al medio ambiente
-Alcaldo: Claro! El truco de conservar el medio ambiente
-Director: Hablalo con tus consejeros o concejales,ya veras como esa peluquera acaba en la quiebra
+Director: Perfecto.
+Director: ¿Qué te parece si ponemos en el periodico...
+Director: que dais menos ayudas a los comercios para destinarlo al medio ambiente?
+Alcaldo: Claro, el truco de conservar el medio ambiente.
+Director: Háblalo con tus consejeros o concejales, ya verás como esa peluquera acaba en la quiebra.
 ===
 title: Director.NoAliado
 tags: 
@@ -42,16 +42,16 @@ colorID: 0
 position: 587,442
 ---
 << set $see_rival to true>> 
-Director: Entiendo.. 
-Director: Es una pena, ibamos a ser grandes aliados
-Director: Buena suerte con sus decisiones, no la cague como ahora
-Alcaldo: Bueno, tampoco ha sido para tanto, es igual, buen dia!
-Directo: Tampoco sera para tanto cuando tu rival politico se entere de toda esta historia
+Director: Entiendo... 
+Director: Es una pena, íbamos a ser grandes aliados.
+Director: Buena suerte con sus decisiones, no la cagues como ahora.
+Alcaldo: Bueno, tampoco ha sido para tanto.
+Directo: Tampoco será para tanto cuando tus rivales se entere de toda esta historia.
 ===
 title: Director.Exit
 tags: 
 colorID: 0
 position: 947,434
 ---
-Director: Adios alcaldo!
+Director: ¡Adiós, alcaldo!
 ===
