@@ -58,17 +58,32 @@ public class TransportDisplayController : MonoBehaviour
     void SetData() => SetData(displayedTransport);
 
     public void OnExpansionsValueChange(int newValue)
-    {
-        if (initiallized++ > 1) SocietyDataInterface.AddTransportExpansionsChange(displayedTransport.CityPlace, displayedTransport.TransportType, (Transport.EXPANSION)newValue);
+    {     
+        if (initiallized++ > 1)
+        {
+            if (newValue != expansions.value)
+            {
+                Debug.Log("You have not changed the dropdown value");
+                return;
+            }
+            Debug.Log("Expansion value changed");
+            SocietyDataInterface.AddTransportExpansionsChange(displayedTransport.CityPlace, displayedTransport.TransportType, (Transport.EXPANSION)newValue);
+        }
+        else initiallized++;
     }
 
     public void OnEnhancementsValueChange(int newValue)
     {
-        if (initiallized++ > 1) SocietyDataInterface.AddTransportEnhancementsChange(displayedTransport.CityPlace, displayedTransport.TransportType, (Transport.ENHANCEMENTS)newValue);
-    }
-
-    void Update()
-    {
-        if (initiallized > 1) SetData();
+        if (initiallized++ > 1)
+        {
+            if (newValue != enhancements.value)
+            {
+                Debug.Log("You have not changed the dropdown value");
+                return;
+            }
+            Debug.Log("Enhancements value changed");
+            SocietyDataInterface.AddTransportEnhancementsChange(displayedTransport.CityPlace, displayedTransport.TransportType, (Transport.ENHANCEMENTS)newValue);
+        }
+        else initiallized++;
     }
 }

@@ -29,12 +29,14 @@ public class CityDisplayController : MonoBehaviour
 
     IEnumerator DelayedInit()
     {
+        Debug.Log("Wait a second please");
         yield return new WaitForSeconds(1f);
         centerPanel.GetComponent<CityPartDisplayController>().SetData(CitytoRepresent.CityParts[(int)CityPart.PLACE.CENTER]);
         northPanel.GetComponent<CityPartDisplayController>().SetData(CitytoRepresent.CityParts[(int)CityPart.PLACE.NORTH]);
         eastPanel.GetComponent<CityPartDisplayController>().SetData(CitytoRepresent.CityParts[(int)CityPart.PLACE.EAST]);
         westPanel.GetComponent<CityPartDisplayController>().SetData(CitytoRepresent.CityParts[(int)CityPart.PLACE.WEST]);
         southPanel.GetComponent<CityPartDisplayController>().SetData(CitytoRepresent.CityParts[(int)CityPart.PLACE.SOUTH]);
+        Debug.Log("Displaying current city data");
     }
 
     void FixedUpdate()
@@ -57,9 +59,11 @@ public class CityDisplayController : MonoBehaviour
 
 
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.R))
         {
             SocietyManagement.ProcessDay();
+            Debug.Log("Wait a second please");
+            StartCoroutine(DelayedInit());
         }
     }
 }
