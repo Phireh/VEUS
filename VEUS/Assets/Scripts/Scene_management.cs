@@ -24,33 +24,33 @@ public class Scene_management : MonoBehaviour
 
             if (gameObject.name.Equals("exitTownHall"))
             {
-                level = 0;
+                level = 1;
                 sceneName = "townHall";
             }
 
             else if (gameObject.name.Equals("exitNewsroom")){
-                level = 0;
+                level = 1;
                 sceneName = "newsroom";
             }
 
             else if (gameObject.name.Equals("exitBarbershop"))
             {
-                level = 0;
+                level = 1;
                 sceneName = "barbershop";
             }
 
             else if (gameObject.name.Equals("enterTownHall"))
             {
-                level = 1;
+                level = 2;
 
             }
             else if (gameObject.name.Equals("enterBarberShop"))
             {
-                level = 2;
+                level = 3;
             }
             else if (gameObject.name.Equals("enterNewsroom"))
             {
-                level = 3;
+                level = 4;
             }
 
             Debug.Log("Collider: " + gameObject.name + " " + level);
