@@ -67,19 +67,41 @@ public class JobDisplayController : MonoBehaviour
 
     public void OnExtensioValueChange(int newValue)
     {
-        if (initiallized++ > 2) SocietyDataInterface.AddIndustryExtensionChange(displayedJob.CityPlace, displayedJob.JobType, (Job.EXTENSION)newValue);
+        if (initiallized++ > 2)
+        {
+            if (newValue == extension.value)
+            {
+                Debug.Log("You have not changed the dropdown value");
+                return;
+            }
+            SocietyDataInterface.AddIndustryExtensionChange(displayedJob.CityPlace, displayedJob.JobType, (Job.EXTENSION)newValue);
+            Debug.Log("Extension value changed");
+        }
     }
     public void OnDurationValueChange(int newValue)
     {
-        if (initiallized++ > 2) SocietyDataInterface.AddIndustryContractsDurationChange(displayedJob.CityPlace, displayedJob.JobType, (Job.DURATION)newValue);
+        if (initiallized++ > 2)
+        {
+            if (newValue != duration.value)
+            {
+                Debug.Log("You have not changed the dropdown value");
+                return;
+            }
+            Debug.Log("Duration value changed");
+            SocietyDataInterface.AddIndustryContractsDurationChange(displayedJob.CityPlace, displayedJob.JobType, (Job.DURATION)newValue);
+        }
     }
     public void OnTimeDemandValueChange(int newValue)
     {
-        if (initiallized++ > 2) SocietyDataInterface.AddIndustryTimeDemandChange(displayedJob.CityPlace, displayedJob.JobType, (Job.TIME_DEMAND)newValue);
-    }
-
-    void Update()
-    {
-        if (initiallized > 2) SetData();
+        if (initiallized++ > 2)
+        {
+            if (newValue != timeDemand.value)
+            {
+                Debug.Log("You have not changed the dropdown value");
+                return;
+            }
+            SocietyDataInterface.AddIndustryTimeDemandChange(displayedJob.CityPlace, displayedJob.JobType, (Job.TIME_DEMAND)newValue);
+            Debug.Log("Time demand value changed");
+        }
     }
 }

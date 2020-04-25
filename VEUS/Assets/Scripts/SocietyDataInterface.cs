@@ -113,6 +113,34 @@ public static class SocietyDataInterface
         => City.CityParts[(int)cityPlace].LeisureSector.Fun.GetIndexState();
 
 
+    /////////////////////
+    // Citizen Getters //
+    /////////////////////
+
+    public static Index.STATE GetCitizensHappinessState(CityPart.PLACE cityPlace)
+        => City.CityParts[(int)cityPlace].GlobalHappiness.GetIndexState();
+
+    public static Index.STATE GetCitizensHealthState(CityPart.PLACE cityPlace)
+        => City.CityParts[(int)cityPlace].GlobalHealth.GetIndexState();
+
+    public static int GetCitizensCount(CityPart.PLACE cityPlace)
+        => City.CityParts[(int)cityPlace].CitizensCount;
+
+    public static int GetCitizensEconomicClassCount(CityPart.PLACE cityPlace, Citizen.ECONOMIC_CLASS ec)
+        => City.CityParts[(int)cityPlace].CountClassCitizens(ec);
+
+    public static int GetCitizensEnviomentalCommitmentCount(CityPart.PLACE cityPlace, Citizen.ENVIROMENTAL_COMMITMENT ec)
+        => City.CityParts[(int)cityPlace].CountEnviromentalCommitmentCitizens(ec);
+
+    public static int GetCitizensNatureCount(CityPart.PLACE cityPlace, Citizen.NATURE n)
+        => City.CityParts[(int)cityPlace].CountNatureCitizens(n);
+
+    public static int GetCitizensTimeManagementCount(CityPart.PLACE cityPlace, Citizen.TIME_MANAGEMENT tm)
+        => City.CityParts[(int)cityPlace].CountTimeManagementCitizens(tm);
+
+    public static int GetCitizensMoneyManagementCount(CityPart.PLACE cityPlace, Citizen.MONEY_MANAGEMENT mm)
+        => City.CityParts[(int)cityPlace].CountMoneyManagementCitizens(mm);
+
     ///////////////////////
     // Transport Changes //
     ///////////////////////

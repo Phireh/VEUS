@@ -49,11 +49,15 @@ public class LeisureDisplayController : MonoBehaviour
 
     public void OnAvailabilityValueChange(int newValue)
     {
-        if (initiallized++ > 0) SocietyDataInterface.AddLeisureAvailabilityStateChange(displayedLeisure.CityPlace, displayedLeisure.LeisurePlace, (Leisure.AVAILABILITY)newValue);
-    }
-
-    void Update()
-    {
-        if (initiallized > 0) SetData();
+        if (initiallized++ > 0)
+        {
+            if (newValue != availability.value)
+            {
+                Debug.Log("You have not changed the dropdown value");
+                return;
+            }
+            Debug.Log("Availability value changed");
+            SocietyDataInterface.AddLeisureAvailabilityStateChange(displayedLeisure.CityPlace, displayedLeisure.LeisurePlace, (Leisure.AVAILABILITY)newValue);
+        }
     }
 }
