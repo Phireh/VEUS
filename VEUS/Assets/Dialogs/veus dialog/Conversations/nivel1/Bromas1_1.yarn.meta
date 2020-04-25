@@ -1,0 +1,35 @@
+fileFormatVersion: 2
+guid: 05f767e543baf4e4fae6c5f43735c8e7
+ScriptedImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 2
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 94073015eacc34c1d8fc6786e43d60ca, type: 3}
+  baseLanguageID: 
+  stringIDs:
+  - Bromas1_1-Bromas-0
+  - Bromas1_1-Bromas-1
+  - Bromas1_1-Bromas-2
+  - Bromas1_1-Bromas-3
+  - Bromas1_1-Bromas-4
+  - Bromas1_1-Bromas-5
+  - Bromas1_1-Bromas-6
+  - Bromas1_1-Bromas-7
+  - Bromas1_1-Bromas-8
+  - Bromas1_1-Bromas.eresPayaso-9
+  - Bromas1_1-Bromas.eresPayaso-10
+  - Bromas1_1-Bromas.eresPayaso-11
+  - Bromas1_1-Bromas.eresPayaso-12
+  - Bromas1_1-Bromas.eresPayaso-13
+  - Bromas1_1-Bromas.Exit-14
+  - Bromas1_1-Bromas.Pelu-15
+  - Bromas1_1-Bromas.Pelu-16
+  - Bromas1_1-Bromas.Pelu-17
+  compilationStatus: 1
+  isSuccesfullyCompiled: 1
+  compilationErrorMessage: 
+  baseLanguage: {instanceID: 0}
+  localizations: []
