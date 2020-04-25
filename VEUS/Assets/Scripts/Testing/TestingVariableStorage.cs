@@ -39,6 +39,7 @@ namespace Yarn.Unity
         void Awake()
         {
             ResetToDefaults();
+            
         }
 
         /// Erase all variables and reset to default values
@@ -109,17 +110,19 @@ namespace Yarn.Unity
             // value
 
             /* TESTING */
-            if (variableName.Equals("$random"))
+            switch (variableName)
             {
+
+                case "$_random":
                 float f = Random.Range(0f, 1f);
                 Yarn.Value outValue = new Yarn.Value(f);
                 return outValue;
-            }
-
-            if (variables.ContainsKey(variableName) == false)
-                return Yarn.Value.NULL;
-
-            return variables[variableName];
+    
+                default:
+                if (variables.ContainsKey(variableName) == false)
+                   return Yarn.Value.NULL;
+                return variables[variableName];
+            }      
         }
 
         /// Erase all variables

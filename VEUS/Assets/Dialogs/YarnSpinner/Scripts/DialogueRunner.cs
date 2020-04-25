@@ -345,11 +345,83 @@ namespace Yarn.Unity
                 dialogue.SetProgram(combinedProgram);
             }
 
-            
+            /* TESTING */
+            AddCommandHandler("call", Call);
+            LoadGlobalVars();
+
+
             if (startAutomatically) {
                 StartDialogue();
             }
-            
+
+
+        }
+
+        private void LoadGlobalVars()
+        {
+            variableStorage.SetValue("$PLACE.NORTH", 0);
+            variableStorage.SetValue("$PLACE.WEST", 1);
+            variableStorage.SetValue("$PLACE.SOUTH", 2);
+            variableStorage.SetValue("$PLACE.EAST", 3);
+            variableStorage.SetValue("$PLACE.CENTER", 4);
+
+
+            variableStorage.SetValue("$POPULATION.UNDER_POPULATED", 0);
+            variableStorage.SetValue("$POPULATION.SMALL", 1);
+            variableStorage.SetValue("$POPULATION.MEDIA", 2);
+            variableStorage.SetValue("$POPULATION.LARGE", 3);
+            variableStorage.SetValue("$POPULATION.OVER_POPULATED", 4);
+
+            variableStorage.SetValue("$INDUSTRY.UNDER_DEVELOPED", 0);
+            variableStorage.SetValue("$INDUSTRY.DEVELOPING", 1);
+            variableStorage.SetValue("$INDUSTRY.DEVELOPED", 2);
+
+            variableStorage.SetValue("FUN.BORING", 0);
+            variableStorage.SetValue("FUN.ENJOYABLE", 1);
+            variableStorage.SetValue("FUN.ENTERTAINING", 2);
+
+            variableStorage.SetValue("INFRASTRUCTURE.OLD_FASHIONED", 0);
+            variableStorage.SetValue("INFRASTRUCTURE.UP_TO_DATE", 1);
+            variableStorage.SetValue("INFRASTRUCTURE.CUTTING_EDGE", 2);
+
+            variableStorage.SetValue("SECTOR_INVESTMENT.LOW", 0);
+            variableStorage.SetValue("SECTOR_INVESTMENT.MEDIUM", 1);
+            variableStorage.SetValue("SECTOR_INVESTMENT.HIGH", 2);
+
+
+        }
+
+        private void Call(string [] parameters, System.Action onComplete)
+        {
+            StartCoroutine(CallRoutine(parameters, onComplete));
+        }
+
+        private IEnumerator CallRoutine(string[] parameters, System.Action onComplete)
+        {
+            switch (parameters[0])
+            {
+                case "_random":
+                    float f = UnityEngine.Random.Range(0f, 1f);
+                    variableStorage.SetValue("$_ret", f);
+                    break;
+
+                /* Example of how the City API could look */
+                case "_getPollution":
+                    float pollution = 0.5f; // TheApi.GetPollution();
+                    variableStorage.SetValue("$_ret", pollution);
+                    break;
+
+                case "_getDevState":
+                    float state = 0.5f;
+                    // Here the call would look something like:
+                    // <<call _getDevState $PLACE.CENTER $SECTOR_TYPE.INDUSTRY>>
+                    // state = TheApi.GetDevState(variableStorage.GetValue(parameters[1]), 
+                    //                            variableStorage.GetValue(parameters[2]));
+                    variableStorage.SetValue("_ret", state);
+                    break;
+            }
+            yield return null;
+            onComplete();
         }
 
         /// Adds a program and its base localisation string table
@@ -754,7 +826,8 @@ namespace Yarn.Unity
         }
 
         public abstract void ResetToDefaults ();
-
     }
+
+
 
 }

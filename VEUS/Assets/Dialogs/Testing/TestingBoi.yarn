@@ -4,6 +4,7 @@ colorID: 0
 position: -31,-102
 ---
 TestingBoi: Soy un inocente TestingBoi.
+TestingBoi: BTW, PLACE.NORTH = [$PLACE.NORTH]
 
 [[ Alcaldo: Ph'nglui mglw'nafh Cthulhu R'lyeh wgah'nagl fhtagn | test.do_bad_things ]] 
 [[ Alcaldo: Bruh. Dame un número aleatorio | test.do_awesome_things ]] 
@@ -21,7 +22,8 @@ tags:
 colorID: 0
 position: -37,157
 ---
-<<set $var to $random>> 
+<<call _random>>
+<<set $var to $_ret>> 
 TestingBoi: Tu número es [$var]
 <<if $var > 0.5 >> 
 TestingBoi: Tu número es mayor que 0.5 , bruh

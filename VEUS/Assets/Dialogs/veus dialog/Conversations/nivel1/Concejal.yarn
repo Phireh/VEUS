@@ -1,0 +1,13 @@
+title: Concejal
+tags: 
+colorID: 0
+position: 775,341
+---
+<<if visited("Concejal") is false>> 
+Concejal: La vida de político es dura. Rodeado de falsos amigos.
+Concejal: Eso y hacerse fotos con niños enfermos. Odio los niños.
+Concejal: Si yo fuese tú diversificaría mis ingresos.
+<<else>>
+Concejal: Votar en el senado es mucho más ameno desde que tengo móvil.
+<<endif>> 
+===
