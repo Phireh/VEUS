@@ -18,7 +18,6 @@ public static class SocietyManagement
 
     public static void ProcessDay()
     {
-        int sum = CityOfToday.Changes.ApplyAllChanges();
-        Debug.Log(sum + " changes applied");
+        CityOfToday.ProcessDay();
     }
 }

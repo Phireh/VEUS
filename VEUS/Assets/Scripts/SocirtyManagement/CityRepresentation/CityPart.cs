@@ -78,10 +78,13 @@ public class CityPart
     ///////////////////////
 
     public PLACE CityPlace { get; private set; }
+    public Index GlobalHappiness { get; private set; }
+    public Index GlobalHealth { get; private set; }
     public TransportSector TransportSector { get; private set; }
     public LeisureSector LeisureSector { get; private set; }
     public IndustrySector IndustrySector { get; private set; }
     public Dictionary<int, Citizen> Citizens { get; private set; }
+    public int CitizensCount { get; private set; }
 
     //////////////////
     // Constructors //
@@ -96,10 +99,13 @@ public class CityPart
         Citizens = new Dictionary<int, Citizen>();
         nonAllocatedHomes = new List<Coords>();
         cityHomesGrid = new int[32, 32];
+        GlobalHappiness = new ConditionableIndex("Felicidad Global", "Felicidad Global en el barrio " + CityPlace, 0f);
+        GlobalHappiness = new ConditionableIndex("Salud Global", "Salud Global en el barrio " + CityPlace, 0f);
         InitLaboralSector(industry, industryInvestment);
         InitTransportSector(infrastructure, transportInvestment);
         InitLeisureSector(fun, leisureInvestment);
         InitPopulation(population, populationWealth); // It has to be the last initialization
+        ProcessDay();
     }
 
     //////////////////////
@@ -200,7 +206,53 @@ public class CityPart
     ////////////////////
     // Public Methods //
     ////////////////////
-    public int GetNumberOfCitizens() => Citizens.Count;
+    public int CountClassCitizens(Citizen.ECONOMIC_CLASS economicClass)
+    {
+        int cont = 0;
+        foreach (Citizen c in Citizens.Values)
+            if (c.GetEconomicClass() == economicClass) cont++;
+        return cont;
+    }
+    public ConditionableIndex GetClassProportionIndex(Citizen.ECONOMIC_CLASS economicClass)
+    {
+        float value = CountClassCitizens(economicClass) / CitizensCount;
+        return new ConditionableIndex("Proporción de clases", "Proporción de la clase económica "
+            + economicClass + " en el barrio " + CityPlace, value);
+    }
+    public int CountEnviromentalCommitmentCitizens(Citizen.ENVIROMENTAL_COMMITMENT envCommitment)
+    {
+        int cont = 0;
+        foreach (Citizen c in Citizens.Values)
+            if (c.GetEnviromentalCommitment() == envCommitment) cont++;
+        return cont;
+    }
+    public ConditionableIndex GetEnviromentalCommitmentProportionIndex(Citizen.ECONOMIC_CLASS economicClass)
+    {
+        float value = CountClassCitizens(economicClass) / CitizensCount;
+        return new ConditionableIndex("Proporción de clases", "Proporción de la clase económica "
+            + economicClass + " en el barrio " + CityPlace, value);
+    }
+    public int CountNatureCitizens(Citizen.NATURE nature)
+    {
+        int cont = 0;
+        foreach (Citizen c in Citizens.Values)
+            if (c.Nature == nature) cont++;
+        return cont;
+    }
+    public int CountTimeManagementCitizens(Citizen.TIME_MANAGEMENT timeManagement)
+    {
+        int cont = 0;
+        foreach (Citizen c in Citizens.Values)
+            if (c.GetTimeManagement() == timeManagement) cont++;
+        return cont;
+    }
+    public int CountMoneyManagementCitizens(Citizen.MONEY_MANAGEMENT moneyManagement)
+    {
+        int cont = 0;
+        foreach (Citizen c in Citizens.Values)
+            if (c.GetMoneyManagement() == moneyManagement) cont++;
+        return cont;
+    }
 
     public bool InstallNewCitizen(Citizen newCitizen)
     {
@@ -218,6 +270,24 @@ public class CityPart
         cityHomesGrid[coords.X, coords.Y] = -1;
         Citizens.Remove(id);
         nonAllocatedHomes.Insert(Global.Methods.GetRandom(nonAllocatedHomes.Count), coords);
+    }
+
+    public void ProcessDay()
+    {
+        foreach (Citizen c in Citizens.Values)
+            c.ProcessDay();
+        float happinessValueSum = 0f;
+        float healthValueSum = 0f;
+        int citizensCount = 0;
+        foreach (Citizen c in Citizens.Values)
+        {
+            healthValueSum += c.Health.Value;
+            happinessValueSum += c.Happiness.Value;
+            citizensCount++;
+        }
+        GlobalHealth.Value = healthValueSum / citizensCount;
+        GlobalHappiness.Value = happinessValueSum / citizensCount;
+        CitizensCount = citizensCount;
     }
 
     public override string ToString()

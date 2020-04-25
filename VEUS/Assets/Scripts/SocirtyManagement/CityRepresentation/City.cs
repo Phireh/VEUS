@@ -46,6 +46,12 @@ public City() {
             this);
     }
 
+    public void ProcessDay()
+    {
+        int numC = Changes.ApplyAllChanges();
+        Global.Methods.PrintInfo("Number of changes applied: " + numC);
+        foreach (CityPart c in CityParts) c.ProcessDay();
+    }
 
     public override string ToString()
     {
