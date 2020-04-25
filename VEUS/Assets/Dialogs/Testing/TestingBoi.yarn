@@ -19,9 +19,11 @@ TestingBoi: Ph'nglui mglw'nafh Cthulhu R'lyeh wgah'nagl fhtagn!!!
 title: test.do_awesome_things
 tags: 
 colorID: 0
-position: -37,158
+position: -37,157
 ---
-<<if $random > 0.5 >> 
+<<set $var to $random>> 
+TestingBoi: Tu número es [$var]
+<<if $var > 0.5 >> 
 TestingBoi: Tu número es mayor que 0.5 , bruh
 Alcaldo: BRUUUUUUH!!!!!
 <<else>>
