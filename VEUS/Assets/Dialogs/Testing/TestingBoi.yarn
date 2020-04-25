@@ -1,0 +1,31 @@
+title: test
+tags: 
+colorID: 0
+position: -31,-102
+---
+TestingBoi: Soy un inocente TestingBoi.
+
+[[ Alcaldo: Ph'nglui mglw'nafh Cthulhu R'lyeh wgah'nagl fhtagn | test.do_bad_things ]] 
+[[ Alcaldo: Bruh. Dame un número aleatorio | test.do_awesome_things ]] 
+===
+title: test.do_bad_things
+tags: 
+colorID: 0
+position: 324,-103
+---
+TestingBoi: Ph'nglui mglw'nafh Cthulhu R'lyeh wgah'nagl fhtagn!!!
+<<PrintTheTrueWords TestingBoi the_true_words>> 
+===
+title: test.do_awesome_things
+tags: 
+colorID: 0
+position: -37,158
+---
+<<if $random > 0.5 >> 
+TestingBoi: Tu número es mayor que 0.5 , bruh
+Alcaldo: BRUUUUUUH!!!!!
+<<else>>
+TestingBoi: Tu número es menor que 0.5, bruh
+Alcaldo: Bruh...
+<<endif>> 
+===
