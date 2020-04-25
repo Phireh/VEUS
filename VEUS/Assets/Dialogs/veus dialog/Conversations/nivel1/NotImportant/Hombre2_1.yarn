@@ -3,5 +3,11 @@ tags:
 colorID: 0
 position: 668,253
 ---
+<<call _getPollution>>
+<<if $_ret < 0.4>>
 Hombre: Pues parece que se ha quedao buen dia.
+<<else>>
+Hombre: Ayer tuve que acuchillar a alguien por una mascarilla.
+Hombre: Pero una mascarilla manchada de sangre es antihigiénica, así que no sirvió de nada.
+<<endif>>
 ===

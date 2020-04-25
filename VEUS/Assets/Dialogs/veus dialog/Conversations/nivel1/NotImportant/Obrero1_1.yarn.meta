@@ -8,11 +8,11 @@ ScriptedImporter:
   assetBundleName: 
   assetBundleVariant: 
   script: {fileID: 11500000, guid: 94073015eacc34c1d8fc6786e43d60ca, type: 3}
-  baseLanguageID: 
-  stringIDs:
-  - Obrero1_1-Obrero-0
+  baseLanguageID: es-ES
+  stringIDs: []
   compilationStatus: 1
-  isSuccesfullyCompiled: 1
-  compilationErrorMessage: 
+  isSuccesfullyCompiled: 0
+  compilationErrorMessage: "Error on line 8 at position 31:\nmismatched input '.'
+    expecting COMMAND_CLOSE\r\n<<if $var < $SECTOR_INVESTMENT.MEDIUM>> \r\n                              ^"
   baseLanguage: {instanceID: 0}
   localizations: []

@@ -359,34 +359,34 @@ namespace Yarn.Unity
 
         private void LoadGlobalVars()
         {
-            variableStorage.SetValue("$PLACE.NORTH", 0);
-            variableStorage.SetValue("$PLACE.WEST", 1);
-            variableStorage.SetValue("$PLACE.SOUTH", 2);
-            variableStorage.SetValue("$PLACE.EAST", 3);
-            variableStorage.SetValue("$PLACE.CENTER", 4);
+            variableStorage.SetValue("$PLACE_NORTH", 0);
+            variableStorage.SetValue("$PLACE_WEST", 1);
+            variableStorage.SetValue("$PLACE_SOUTH", 2);
+            variableStorage.SetValue("$PLACE_EAST", 3);
+            variableStorage.SetValue("$PLACE_CENTER", 4);
 
 
-            variableStorage.SetValue("$POPULATION.UNDER_POPULATED", 0);
-            variableStorage.SetValue("$POPULATION.SMALL", 1);
-            variableStorage.SetValue("$POPULATION.MEDIA", 2);
-            variableStorage.SetValue("$POPULATION.LARGE", 3);
-            variableStorage.SetValue("$POPULATION.OVER_POPULATED", 4);
+            variableStorage.SetValue("$POPULATION_UNDER_POPULATED", 0);
+            variableStorage.SetValue("$POPULATION_SMALL", 1);
+            variableStorage.SetValue("$POPULATION_MEDIA", 2);
+            variableStorage.SetValue("$POPULATION_LARGE", 3);
+            variableStorage.SetValue("$POPULATION_OVER_POPULATED", 4);
 
-            variableStorage.SetValue("$INDUSTRY.UNDER_DEVELOPED", 0);
-            variableStorage.SetValue("$INDUSTRY.DEVELOPING", 1);
-            variableStorage.SetValue("$INDUSTRY.DEVELOPED", 2);
+            variableStorage.SetValue("$INDUSTRY_UNDER_DEVELOPED", 0);
+            variableStorage.SetValue("$INDUSTRY_DEVELOPING", 1);
+            variableStorage.SetValue("$INDUSTRY_DEVELOPED", 2);
 
-            variableStorage.SetValue("FUN.BORING", 0);
-            variableStorage.SetValue("FUN.ENJOYABLE", 1);
-            variableStorage.SetValue("FUN.ENTERTAINING", 2);
+            variableStorage.SetValue("$FUN_BORING", 0);
+            variableStorage.SetValue("$FUN_ENJOYABLE", 1);
+            variableStorage.SetValue("$FUN_ENTERTAINING", 2);
 
-            variableStorage.SetValue("INFRASTRUCTURE.OLD_FASHIONED", 0);
-            variableStorage.SetValue("INFRASTRUCTURE.UP_TO_DATE", 1);
-            variableStorage.SetValue("INFRASTRUCTURE.CUTTING_EDGE", 2);
+            variableStorage.SetValue("$INFRASTRUCTURE_OLD_FASHIONED", 0);
+            variableStorage.SetValue("$INFRASTRUCTURE_UP_TO_DATE", 1);
+            variableStorage.SetValue("$INFRASTRUCTURE_CUTTING_EDGE", 2);
 
-            variableStorage.SetValue("SECTOR_INVESTMENT.LOW", 0);
-            variableStorage.SetValue("SECTOR_INVESTMENT.MEDIUM", 1);
-            variableStorage.SetValue("SECTOR_INVESTMENT.HIGH", 2);
+            variableStorage.SetValue("$SECTOR_INVESTMENT_LOW", 0);
+            variableStorage.SetValue("$SECTOR_INVESTMENT_MEDIUM", 1);
+            variableStorage.SetValue("$SECTOR_INVESTMENT_HIGH", 2);
 
 
         }
@@ -407,7 +407,7 @@ namespace Yarn.Unity
 
                 /* Example of how the City API could look */
                 case "_getPollution":
-                    float pollution = 0.5f; // TheApi.GetPollution();
+                    float pollution = 0.3f; // TheApi.GetPollution();
                     variableStorage.SetValue("$_ret", pollution);
                     break;
 
@@ -417,8 +417,15 @@ namespace Yarn.Unity
                     // <<call _getDevState $PLACE.CENTER $SECTOR_TYPE.INDUSTRY>>
                     // state = TheApi.GetDevState(variableStorage.GetValue(parameters[1]), 
                     //                            variableStorage.GetValue(parameters[2]));
-                    variableStorage.SetValue("_ret", state);
+                    variableStorage.SetValue("$_ret", state);
                     break;
+
+                case "_getPopularity":
+                    float pop = 0.1f;
+                    // TheApi.GetPopularity()
+                    variableStorage.SetValue("$_ret", pop);
+                    break;
+
             }
             yield return null;
             onComplete();

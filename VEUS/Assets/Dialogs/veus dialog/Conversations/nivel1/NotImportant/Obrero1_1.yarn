@@ -1,7 +1,12 @@
 title: Obrero
 tags: 
 colorID: 0
-position: 668,253
+position: 498,230
 ---
+<<call _getDevState $PLACE_CENTER $SECTOR_TYPE_INDUSTRY>> 
+<<if $_ret < $SECTOR_INVESTMENT_MEDIUM>> 
 Obrero: No hay nada de presupuesto en la obra y robamos estos cascos para poder trabajar.
+<<else>>
+Obrero: Gracias a ti ya no tenemos que robar cascos, Alcaldo.
+<<endif>> 
 ===
