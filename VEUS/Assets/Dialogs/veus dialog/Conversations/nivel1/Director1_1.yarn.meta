@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 5d58c4007410aaf43a09caebc15b4498
+guid: 9282775776f8d7e46b063ff140dac7d9
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -10,30 +10,30 @@ ScriptedImporter:
   script: {fileID: 11500000, guid: 94073015eacc34c1d8fc6786e43d60ca, type: 3}
   baseLanguageID: es-ES
   stringIDs:
-  - Director1_1-Director-0
-  - Director1_1-Director-1
-  - Director1_1-Director-2
-  - Director1_1-Director-3
-  - Director1_1-Director-4
-  - Director1_1-Director-5
-  - Director1_1-Director-6
-  - Director1_1-Director-7
-  - Director1_1-Director-8
-  - Director1_1-Director-9
-  - Director1_1-Director.Aliado-10
-  - Director1_1-Director.Aliado-11
-  - Director1_1-Director.Aliado-12
-  - Director1_1-Director.Aliado-13
-  - Director1_1-Director.Aliado-14
-  - Director1_1-Director.NoAliado-15
-  - Director1_1-Director.NoAliado-16
-  - Director1_1-Director.NoAliado-17
-  - Director1_1-Director.NoAliado-18
-  - Director1_1-Director.NoAliado-19
-  - Director1_1-Director.Exit-20
+  - Director1_1 (12)-Director-0
+  - Director1_1 (12)-Director-1
+  - Director1_1 (12)-Director-2
+  - Director1_1 (12)-Director-3
+  - Director1_1 (12)-Director-4
+  - Director1_1 (12)-Director-5
+  - Director1_1 (12)-Director-6
+  - Director1_1 (12)-Director-7
+  - Director1_1 (12)-Director-8
+  - Director1_1 (12)-Director-9
+  - Director1_1 (12)-Director.Aliado-10
+  - Director1_1 (12)-Director.Aliado-11
+  - Director1_1 (12)-Director.Aliado-12
+  - Director1_1 (12)-Director.Aliado-13
+  - Director1_1 (12)-Director.Aliado-14
+  - Director1_1 (12)-Director.NoAliado-15
+  - Director1_1 (12)-Director.NoAliado-16
+  - Director1_1 (12)-Director.NoAliado-17
+  - Director1_1 (12)-Director.NoAliado-18
+  - Director1_1 (12)-Director.NoAliado-19
+  - Director1_1 (12)-Director.Exit-20
   compilationStatus: 1
   isSuccesfullyCompiled: 1
   compilationErrorMessage: 
-  baseLanguage: {fileID: 7128917941130120860, guid: 5d58c4007410aaf43a09caebc15b4498,
+  baseLanguage: {fileID: 7128917941130120860, guid: 9282775776f8d7e46b063ff140dac7d9,
     type: 3}
   localizations: []
