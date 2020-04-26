@@ -9,10 +9,19 @@ ScriptedImporter:
   assetBundleVariant: 
   script: {fileID: 11500000, guid: 94073015eacc34c1d8fc6786e43d60ca, type: 3}
   baseLanguageID: 
-  stringIDs: []
-  compilationStatus: 0
-  isSuccesfullyCompiled: 0
-  compilationErrorMessage: "Error on line 6 at position 25:\nmismatched input 'if
-    ' expecting {')', ','}\r\n<<if visited(\"Concejal\" if false>> \r\n                        ^^^"
+  stringIDs:
+  - Concejal-Concejal-0
+  - Concejal-Concejal-1
+  - Concejal-Concejal-2
+  - Concejal-Concejal-3
+  - Concejal-Concejal-4
+  - Concejal-Concejal-5
+  - Concejal-Concejal-6
+  - Concejal-Concejal-7
+  - Concejal-Concejal-8
+  - Concejal-Concejal-9
+  compilationStatus: 1
+  isSuccesfullyCompiled: 1
+  compilationErrorMessage: 
   baseLanguage: {instanceID: 0}
   localizations: []

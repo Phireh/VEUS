@@ -4,14 +4,16 @@ colorID: 0
 position: 181,432
 ---
 << set $see_concejalb to true>> 
+<< decide_c Rival>> 
 Rival politico: Muy bien hecho, ahora reúnete con tus concejales, a ver qué te dicen.
 ===
 title: Rival.NoPacto
 tags: 
 colorID: 0
-position: 562,431
+position: 561,432
 ---
 << set $see_concejalc to true>> 
+<< decide_d Rival>> 
 Rival politico: Ya suponía que te ibas a negar, me lo voy a pasar muy bien en el siguiente pleno.
 ===
 title: Rival.Exit

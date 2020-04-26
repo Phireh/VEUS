@@ -1,7 +1,7 @@
 title: Concejal
 tags: 
 colorID: 0
-position: 775,341
+position: 655,196
 ---
 <<if visited("Concejal") is false>> 
 Concejal: La vida de político es dura. Rodeado de falsos amigos.
@@ -10,4 +10,19 @@ Concejal: Si yo fuese tú diversificaría mis ingresos.
 <<else>>
 Concejal: Votar en el senado es mucho más ameno desde que tengo móvil.
 <<endif>> 
+
+<< if $see_concejal is true>> 
+Alcaldo: Creo que es hora para hacer algo respecto al medio ambiente, no crees?
+Concejal: Vamos a hablarlo con los demás y decidimos que aplicar
+<< endif>>
+
+<< if $see_concejalb is true>> 
+Alcaldo: Creo que es hora para hacer algo respecto a las carreteras y a nuestros sueldos, no crees?
+Concejal: Vamos a hablarlo con los demás y decidimos que aplicar
+<< endif>> 
+
+<< if $see_concejalc is true>> 
+Alcaldo: Creo que tenemos que tomar alguna medida para cambiar el rumbo de esta ciudad, no crees?
+Concejal: Vamos a hablarlo con los demás y decidimos que aplicar
+<< endif>>
 ===

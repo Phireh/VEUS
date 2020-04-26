@@ -6,6 +6,7 @@ public class TargetDecision : MonoBehaviour
 {
     public Transform target;
     public GameObject targetChosed;
+    public GameObject targetIndicator;
     public float HideDistance;
 
     void Update()
@@ -21,6 +22,7 @@ public class TargetDecision : MonoBehaviour
                     child.gameObject.SetActive(false);
                 }
                 targetChosed.SetActive(false);
+                targetIndicator.SetActive(false);
             }
             else
             {
