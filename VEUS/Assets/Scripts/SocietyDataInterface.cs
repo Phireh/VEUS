@@ -207,19 +207,6 @@ public static class SocietyDataInterface
         return helVal / 5;
     }
 
-    public static float GetGlobalSectorDevelopementValue(CityPart.SECTOR_TYPE st)
-    {
-        float devlVal = 0f;
-        foreach (CityPart cp in SocietyManagement.CityOfToday.CityParts)
-            switch (st)
-            {
-                case CityPart.SECTOR_TYPE.INDUSTRY: devlVal += cp.IndustrySector.Investment.Value + cp.IndustrySector.Development.Value; break;
-                case CityPart.SECTOR_TYPE.LEISURE: devlVal += cp.IndustrySector.Investment.Value + cp.LeisureSector.Fun.Value; break;
-                case CityPart.SECTOR_TYPE.TRANSPORT: devlVal += cp.IndustrySector.Investment.Value + cp.TransportSector.Technology.Value; break;
-            }
-        return devlVal / 6;
-    }
-
     public static Index.STATE GetGlobalSectorDevelopementState(CityPart.SECTOR_TYPE st)
     {
         float devlVal = 0f;
@@ -252,7 +239,7 @@ public static class SocietyDataInterface
         return new RepresentativeIndex("", "", lovaVal).GetIndexState();
     }
 
-    public static Index.STATE GetAlcaldoLoceValue()
+    public static float GetAlcaldoLoceValue()
     {
         float lovaVal = (GetGlobalHappinessValue() + GetGlobalHealthValue()) / 2;
         return lovaVal;
