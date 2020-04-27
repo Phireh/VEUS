@@ -243,6 +243,18 @@ public class ConditionableIndex : Index
     }
 }
 
+public class RepresentativeIndex : Index
+{
+    public RepresentativeIndex(string name, string description, float value) : base(name, description, value) { }
+
+    protected override float GetIndexValue() => baseValue;
+
+    public override string ToString()
+    {
+        return "Índice condicionable:[" + ID + "] => " + Name + ": \"" + Description + "\" | Valor Base: (" + Value + ")";
+    }
+}
+
 public class DependentIndex : Index
 {
     ///////////////////////

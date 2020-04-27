@@ -10,6 +10,7 @@ public class CityPartDisplayController : MonoBehaviour
     public GameObject industrySectorPanel;
     public GameObject leisureSectorPanel;
     public GameObject transportSectorPanel;
+    public GameObject citizensSectorPanel;
     // Start is called before the first frame update
     public void SetData(CityPart p)
     {
@@ -18,5 +19,6 @@ public class CityPartDisplayController : MonoBehaviour
         industrySectorPanel.GetComponent<IndustrialSectorDisplayController>().SetData(p.IndustrySector);
         leisureSectorPanel.GetComponent<LeisureSectorDisplayController>().SetData(p.LeisureSector);
         transportSectorPanel.GetComponent<TransportSectorDisplayController>().SetData(p.TransportSector);
+        citizensSectorPanel.GetComponent<CitizenDisplayController>().SetData(p);
     }
 }
