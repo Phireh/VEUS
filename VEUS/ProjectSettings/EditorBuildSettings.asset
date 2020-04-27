@@ -8,12 +8,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Main menu.unity
     guid: 258ce6a10e2974d4695b0ef42d99c14f
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/Scenes/Principal.unity
+    guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
     path: Assets/Scenes/Town_hall.unity
     guid: 0a19941f78294428eabfb58c81c47129
@@ -21,12 +18,12 @@ EditorBuildSettings:
     path: Assets/Scenes/Barbershop.unity
     guid: b6fb4942fd93c4cd0bfb3105914f3fe2
   - enabled: 1
-    path: Assets/Scenes/Newsroom.unity
-    guid: 54b1ee8b6b72e48ae8765793057c2d65
-  - enabled: 1
     path: Assets/Scenes/Final.unity
     guid: 9a13d8b6a4f45f0409a7e506fa473e2c
   - enabled: 1
     path: Assets/Scenes/FinalDia.unity
     guid: 38bbccfea6ded1c499d496a03fd54318
+  - enabled: 1
+    path: Assets/Scenes/Newsroom.unity
+    guid: 54b1ee8b6b72e48ae8765793057c2d65
   m_configObjects: {}
