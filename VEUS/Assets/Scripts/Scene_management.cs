@@ -21,6 +21,7 @@ public class Scene_management : MonoBehaviour
     void Start()
     {
         DontDestroyOnLoad(Dialogue);
+        DontDestroyOnLoad(player);
     }
 
     private void OnTriggerEnter2D(Collider2D collider)
