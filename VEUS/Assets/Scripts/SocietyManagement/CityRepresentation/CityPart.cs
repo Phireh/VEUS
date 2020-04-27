@@ -348,11 +348,11 @@ public class CityPart
         CitizensCount = citizensCount;
 
         lowClassCitizens = lowClassCitizensCount;
-        LowClassProportion.Value = lowClassCitizens / CitizensCount;
+        LowClassProportion.Value =  lowClassCitizens / (float) CitizensCount;
         middleClassCitizens = middleClassCitizensCount;
-        MiddleClassProportion.Value = middleClassCitizens / CitizensCount;
+        MiddleClassProportion.Value = middleClassCitizens / (float) CitizensCount;
         highClassCitizens = highClassCitizensCount;
-        HighClassProportion.Value = highClassCitizens / CitizensCount;
+        HighClassProportion.Value = highClassCitizens / (float) CitizensCount;
 
         noneEnvriomentalCommitmentCitizens = noneEnvriomentalCommitmentCitizensCount;
         someEnviromentalCommitmentCitizens = someEnviromentalCommitmentCitizensCount;

@@ -16,6 +16,7 @@ public class CityDisplayController : MonoBehaviour
     public GameObject eastPanel;
     public GameObject westPanel;
     public GameObject southPanel;
+    public GameObject globalPanel;
     // Start is called before the first frame update
     void Start()
     {
@@ -36,6 +37,7 @@ public class CityDisplayController : MonoBehaviour
         eastPanel.GetComponent<CityPartDisplayController>().SetData(CitytoRepresent.CityParts[(int)CityPart.PLACE.EAST]);
         westPanel.GetComponent<CityPartDisplayController>().SetData(CitytoRepresent.CityParts[(int)CityPart.PLACE.WEST]);
         southPanel.GetComponent<CityPartDisplayController>().SetData(CitytoRepresent.CityParts[(int)CityPart.PLACE.SOUTH]);
+        globalPanel.GetComponent<GlobalValuesDisplayController>().SetData();
         Debug.Log("Displaying current city data");
     }
 

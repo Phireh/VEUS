@@ -259,7 +259,7 @@ public class Global
             failingToWorkPenalty = 50;
             restingHourBonus = 0.075f;
             minContiniousHoursToRest = 3;
-    }
+        }
     }
     
     public class Methods : MonoBehaviour
