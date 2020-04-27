@@ -10,11 +10,18 @@ public class Scene_management : MonoBehaviour
 
     public GameObject player;
 
+    public GameObject Dialogue;
+
     static string sceneName = "";
 
     static int level;
 
     
+
+    void Start()
+    {
+        DontDestroyOnLoad(Dialogue);
+    }
 
     private void OnTriggerEnter2D(Collider2D collider)
     {

@@ -4187,6 +4187,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1595662821246004616, guid: 6051cd554698d984a8a3fe2a0e571e3b,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 1595662821246004619, guid: 6051cd554698d984a8a3fe2a0e571e3b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -4776,6 +4781,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 2101004500}
   player: {fileID: 1547138859}
+  Dialogue: {fileID: 0}
 --- !u!4 &2101004499
 Transform:
   m_ObjectHideFlags: 0
