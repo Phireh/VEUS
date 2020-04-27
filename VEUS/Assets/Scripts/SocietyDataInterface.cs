@@ -113,9 +113,9 @@ public static class SocietyDataInterface
         => City.CityParts[(int)cityPlace].LeisureSector.Fun.GetIndexState();
 
 
-    /////////////////////
-    // Citizen Getters //
-    /////////////////////
+    ///////////////////////
+    // City Part Getters //
+    ///////////////////////
 
     public static Index.STATE GetCitizensHappinessState(CityPart.PLACE cityPlace)
         => City.CityParts[(int)cityPlace].GlobalHappiness.GetIndexState();
@@ -129,6 +129,16 @@ public static class SocietyDataInterface
     public static int GetCitizensEconomicClassCount(CityPart.PLACE cityPlace, Citizen.ECONOMIC_CLASS ec)
         => City.CityParts[(int)cityPlace].CountClassCitizens(ec);
 
+    public static Index.STATE GetCitizensEconomicClassProportionState(CityPart.PLACE cityPlace, Citizen.ECONOMIC_CLASS ec)
+    {
+        switch (ec)
+        {
+            case Citizen.ECONOMIC_CLASS.LOW: return City.CityParts[(int)cityPlace].LowClassProportion.GetIndexState();
+            case Citizen.ECONOMIC_CLASS.MIDDLE: return City.CityParts[(int)cityPlace].MiddleClassProportion.GetIndexState(); ;
+            case Citizen.ECONOMIC_CLASS.HIGH: default:  return City.CityParts[(int)cityPlace].HighClassProportion.GetIndexState(); ;
+        }
+    }
+
     public static int GetCitizensEnviomentalCommitmentCount(CityPart.PLACE cityPlace, Citizen.ENVIROMENTAL_COMMITMENT ec)
         => City.CityParts[(int)cityPlace].CountEnviromentalCommitmentCitizens(ec);
 
@@ -140,6 +150,113 @@ public static class SocietyDataInterface
 
     public static int GetCitizensMoneyManagementCount(CityPart.PLACE cityPlace, Citizen.MONEY_MANAGEMENT mm)
         => City.CityParts[(int)cityPlace].CountMoneyManagementCitizens(mm);
+
+    public static Index.STATE GetCityPartPollutionState(CityPart.PLACE cityPlace)
+        => City.CityParts[(int)cityPlace].TransportSector.SectorPollution.GetIndexState();
+
+
+    ////////////////////
+    // Global Getters //
+    ////////////////////
+
+    public static Index.STATE GetGlobalPollutionState()
+    {
+        float polVal = 0f;
+        foreach (CityPart cp in SocietyManagement.CityOfToday.CityParts)
+            polVal += cp.TransportSector.SectorPollution.Value;
+        return new RepresentativeIndex("", "", polVal / 5).GetIndexState();
+    }
+
+    public static float GetGlobalPollutionValue()
+    {
+        float polVal = 0f;
+        foreach (CityPart cp in SocietyManagement.CityOfToday.CityParts)
+            polVal += cp.TransportSector.SectorPollution.Value;
+        return polVal / 5;
+    }
+
+    public static Index.STATE GetGlobalHappinessState()
+    {
+        float hapVal = 0f;
+        foreach (CityPart cp in SocietyManagement.CityOfToday.CityParts)
+            hapVal += cp.GlobalHappiness.Value;
+        return new RepresentativeIndex("", "", hapVal / 5).GetIndexState();
+    }
+
+    public static float GetGlobalHappinessValue()
+    {
+        float hapVal = 0f;
+        foreach (CityPart cp in SocietyManagement.CityOfToday.CityParts)
+            hapVal += cp.GlobalHappiness.Value;
+        return hapVal / 5;
+    }
+
+    public static Index.STATE GetGlobalHealthState()
+    {
+        float helVal = 0f;
+        foreach (CityPart cp in SocietyManagement.CityOfToday.CityParts)
+            helVal += cp.GlobalHealth.Value;
+        return new RepresentativeIndex("", "", helVal / 5).GetIndexState();
+    }
+
+    public static float GetGlobalHealthValue()
+    {
+        float helVal = 0f;
+        foreach (CityPart cp in SocietyManagement.CityOfToday.CityParts)
+            helVal += cp.GlobalHealth.Value;
+        return helVal / 5;
+    }
+
+    public static float GetGlobalSectorDevelopementValue(CityPart.SECTOR_TYPE st)
+    {
+        float devlVal = 0f;
+        foreach (CityPart cp in SocietyManagement.CityOfToday.CityParts)
+            switch (st)
+            {
+                case CityPart.SECTOR_TYPE.INDUSTRY: devlVal += cp.IndustrySector.Investment.Value + cp.IndustrySector.Development.Value; break;
+                case CityPart.SECTOR_TYPE.LEISURE: devlVal += cp.IndustrySector.Investment.Value + cp.LeisureSector.Fun.Value; break;
+                case CityPart.SECTOR_TYPE.TRANSPORT: devlVal += cp.IndustrySector.Investment.Value + cp.TransportSector.Technology.Value; break;
+            }
+        return devlVal / 6;
+    }
+
+    public static Index.STATE GetGlobalSectorDevelopementState(CityPart.SECTOR_TYPE st)
+    {
+        float devlVal = 0f;
+        foreach (CityPart cp in SocietyManagement.CityOfToday.CityParts)
+            switch (st)
+            {
+                case CityPart.SECTOR_TYPE.INDUSTRY: devlVal += cp.IndustrySector.Investment.Value + cp.IndustrySector.Development.Value; break;
+                case CityPart.SECTOR_TYPE.LEISURE: devlVal += cp.IndustrySector.Investment.Value + cp.LeisureSector.Fun.Value; break;
+                case CityPart.SECTOR_TYPE.TRANSPORT: devlVal += cp.IndustrySector.Investment.Value + cp.TransportSector.Technology.Value; break;
+            }
+        return new RepresentativeIndex("", "", devlVal / 6).GetIndexState();
+    }
+
+    public static float GetGlobalSectorDevelopementValue(CityPart.SECTOR_TYPE st)
+    {
+        float devlVal = 0f;
+        foreach (CityPart cp in SocietyManagement.CityOfToday.CityParts)
+            switch (st)
+            {
+                case CityPart.SECTOR_TYPE.INDUSTRY: devlVal += cp.IndustrySector.Investment.Value + cp.IndustrySector.Development.Value; break;
+                case CityPart.SECTOR_TYPE.LEISURE: devlVal += cp.IndustrySector.Investment.Value + cp.LeisureSector.Fun.Value; break;
+                case CityPart.SECTOR_TYPE.TRANSPORT: devlVal += cp.IndustrySector.Investment.Value + cp.TransportSector.Technology.Value; break;
+            }
+        return devlVal / 6;
+    }
+
+    public static Index.STATE GetAlcaldoLoceState()
+    {
+        float lovaVal = (GetGlobalHappinessValue() + GetGlobalHealthValue()) / 2;
+        return new RepresentativeIndex("", "", lovaVal).GetIndexState();
+    }
+
+    public static Index.STATE GetAlcaldoLoceValue()
+    {
+        float lovaVal = (GetGlobalHappinessValue() + GetGlobalHealthValue()) / 2;
+        return lovaVal;
+    }
 
     ///////////////////////
     // Transport Changes //

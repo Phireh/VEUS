@@ -65,6 +65,13 @@ public class CityPart
         HIGH = 2
     }
 
+    public enum SECTOR_TYPE
+    {
+        TRANSPORT = 0,
+        LEISURE = 1,
+        INDUSTRY = 2
+    }
+
     ///////////////////////
     // Private Variables //
     ///////////////////////
@@ -72,19 +79,27 @@ public class CityPart
     City city;
     int[,] cityHomesGrid;
     List<Coords> nonAllocatedHomes;
+    int lowClassCitizens, middleClassCitizens, highClassCitizens;
+    int noneEnvriomentalCommitmentCitizens, someEnviromentalCommitmentCitizens, fullEnviromentalCommitmentCitizens;
+    int calmedTimeManagementCitizens, normalTimeManagementCitizens, rushedTimeManagementCitizens;
+    int stingyMoneyManagementCitizens, responsibleMoneyManagementCitizens, wastefulMoneyManagementCitizens;
+    int activeNatureCitizens, calmNatureCitizens, socialNatureCitizens, dreamerNatureCitizens;
 
     ///////////////////////
     // Public Properties //
     ///////////////////////
 
     public PLACE CityPlace { get; private set; }
-    public Index GlobalHappiness { get; private set; }
-    public Index GlobalHealth { get; private set; }
+    public RepresentativeIndex GlobalHappiness { get; private set; }
+    public RepresentativeIndex GlobalHealth { get; private set; }
     public TransportSector TransportSector { get; private set; }
     public LeisureSector LeisureSector { get; private set; }
     public IndustrySector IndustrySector { get; private set; }
     public Dictionary<int, Citizen> Citizens { get; private set; }
     public int CitizensCount { get; private set; }
+    public RepresentativeIndex LowClassProportion { get; private set; }
+    public RepresentativeIndex MiddleClassProportion { get; private set; }
+    public RepresentativeIndex HighClassProportion { get; private set; }
 
     //////////////////
     // Constructors //
@@ -99,13 +114,16 @@ public class CityPart
         Citizens = new Dictionary<int, Citizen>();
         nonAllocatedHomes = new List<Coords>();
         cityHomesGrid = new int[32, 32];
-        GlobalHappiness = new ConditionableIndex("Felicidad Global", "Felicidad Global en el barrio " + CityPlace, 0f);
-        GlobalHappiness = new ConditionableIndex("Salud Global", "Salud Global en el barrio " + CityPlace, 0f);
+        GlobalHappiness = new RepresentativeIndex("Felicidad Global", "Felicidad Global en el barrio " + CityPlace, 0.5f);
+        GlobalHealth = new RepresentativeIndex("Salud Global", "Salud Global en el barrio " + CityPlace, 0.5f);
+        LowClassProportion = new RepresentativeIndex("Clase Baja", "Proporción de ciudadanos de clase baja en el barrio " + CityPlace, 0.5f);
+        MiddleClassProportion = new RepresentativeIndex("Clase Media", "Proporción de ciudadanos de clase media en el barrio " + CityPlace, 0.5f);
+        HighClassProportion = new RepresentativeIndex("Clase Alta", "Proporción de ciudadanos de clase alta en el barrio " + CityPlace, 0.5f);
         InitLaboralSector(industry, industryInvestment);
         InitTransportSector(infrastructure, transportInvestment);
         InitLeisureSector(fun, leisureInvestment);
         InitPopulation(population, populationWealth); // It has to be the last initialization
-        ProcessDay();
+        //ProcessDay();
     }
 
     //////////////////////
@@ -208,50 +226,54 @@ public class CityPart
     ////////////////////
     public int CountClassCitizens(Citizen.ECONOMIC_CLASS economicClass)
     {
-        int cont = 0;
-        foreach (Citizen c in Citizens.Values)
-            if (c.GetEconomicClass() == economicClass) cont++;
-        return cont;
-    }
-    public ConditionableIndex GetClassProportionIndex(Citizen.ECONOMIC_CLASS economicClass)
-    {
-        float value = CountClassCitizens(economicClass) / CitizensCount;
-        return new ConditionableIndex("Proporción de clases", "Proporción de la clase económica "
-            + economicClass + " en el barrio " + CityPlace, value);
+        switch (economicClass)
+        {
+            case Citizen.ECONOMIC_CLASS.LOW: return lowClassCitizens;
+            case Citizen.ECONOMIC_CLASS.MIDDLE: return middleClassCitizens;
+            case Citizen.ECONOMIC_CLASS.HIGH: return highClassCitizens;
+            default: return -1;
+        }
     }
     public int CountEnviromentalCommitmentCitizens(Citizen.ENVIROMENTAL_COMMITMENT envCommitment)
     {
-        int cont = 0;
-        foreach (Citizen c in Citizens.Values)
-            if (c.GetEnviromentalCommitment() == envCommitment) cont++;
-        return cont;
-    }
-    public ConditionableIndex GetEnviromentalCommitmentProportionIndex(Citizen.ECONOMIC_CLASS economicClass)
-    {
-        float value = CountClassCitizens(economicClass) / CitizensCount;
-        return new ConditionableIndex("Proporción de clases", "Proporción de la clase económica "
-            + economicClass + " en el barrio " + CityPlace, value);
+        switch (envCommitment)
+        {
+            case Citizen.ENVIROMENTAL_COMMITMENT.NONE: return noneEnvriomentalCommitmentCitizens;
+            case Citizen.ENVIROMENTAL_COMMITMENT.SOME : return someEnviromentalCommitmentCitizens;
+            case Citizen.ENVIROMENTAL_COMMITMENT.FULL: return fullEnviromentalCommitmentCitizens;
+            default: return -1;
+        }
     }
     public int CountNatureCitizens(Citizen.NATURE nature)
     {
-        int cont = 0;
-        foreach (Citizen c in Citizens.Values)
-            if (c.Nature == nature) cont++;
-        return cont;
+        switch (nature)
+        {
+            case Citizen.NATURE.ACTIVE: return activeNatureCitizens;
+            case Citizen.NATURE.CALM: return calmNatureCitizens;
+            case Citizen.NATURE.DREAMER: return dreamerNatureCitizens;
+            case Citizen.NATURE.SOCIAL: return socialNatureCitizens;
+            default: return -1;
+        }
     }
     public int CountTimeManagementCitizens(Citizen.TIME_MANAGEMENT timeManagement)
     {
-        int cont = 0;
-        foreach (Citizen c in Citizens.Values)
-            if (c.GetTimeManagement() == timeManagement) cont++;
-        return cont;
+        switch (timeManagement)
+        {
+            case Citizen.TIME_MANAGEMENT.CALMED: return calmedTimeManagementCitizens;
+            case Citizen.TIME_MANAGEMENT.NORMAL: return normalTimeManagementCitizens;
+            case Citizen.TIME_MANAGEMENT.RUSHED: return rushedTimeManagementCitizens;
+            default: return -1;
+        }
     }
     public int CountMoneyManagementCitizens(Citizen.MONEY_MANAGEMENT moneyManagement)
     {
-        int cont = 0;
-        foreach (Citizen c in Citizens.Values)
-            if (c.GetMoneyManagement() == moneyManagement) cont++;
-        return cont;
+        switch (moneyManagement)
+        {
+            case Citizen.MONEY_MANAGEMENT.STINGY: return stingyMoneyManagementCitizens;
+            case Citizen.MONEY_MANAGEMENT.RESPONSIBLE: return responsibleMoneyManagementCitizens;
+            case Citizen.MONEY_MANAGEMENT.WASTEFUL: return wastefulMoneyManagementCitizens;
+            default: return -1;
+        }
     }
 
     public bool InstallNewCitizen(Citizen newCitizen)
@@ -279,15 +301,77 @@ public class CityPart
         float happinessValueSum = 0f;
         float healthValueSum = 0f;
         int citizensCount = 0;
+        int lowClassCitizensCount = 0, middleClassCitizensCount = 0, highClassCitizensCount = 0;
+        int noneEnvriomentalCommitmentCitizensCount = 0, someEnviromentalCommitmentCitizensCount = 0, fullEnviromentalCommitmentCitizensCount = 0;
+        int calmedTimeManagementCitizensCount = 0, normalTimeManagementCitizensCount = 0, rushedTimeManagementCitizensCount = 0;
+        int stingyMoneyManagementCitizensCount = 0, responsibleMoneyManagementCitizensCount = 0, wastefulMoneyManagementCitizensCount = 0;
+        int activeNatureCitizensCount = 0, calmNatureCitizensCount = 0, socialNatureCitizensCount = 0, dreamerNatureCitizensCount = 0;
         foreach (Citizen c in Citizens.Values)
         {
             healthValueSum += c.Health.Value;
             happinessValueSum += c.Happiness.Value;
             citizensCount++;
+            switch (c.GetEconomicClass())
+            {
+                case Citizen.ECONOMIC_CLASS.LOW: lowClassCitizensCount++; break;
+                case Citizen.ECONOMIC_CLASS.MIDDLE: middleClassCitizensCount++; break;
+                case Citizen.ECONOMIC_CLASS.HIGH: highClassCitizensCount++; break;
+            }
+            switch (c.GetEnviromentalCommitment())
+            {
+                case Citizen.ENVIROMENTAL_COMMITMENT.NONE: noneEnvriomentalCommitmentCitizensCount++; break;
+                case Citizen.ENVIROMENTAL_COMMITMENT.SOME: someEnviromentalCommitmentCitizensCount++; break;
+                case Citizen.ENVIROMENTAL_COMMITMENT.FULL: fullEnviromentalCommitmentCitizensCount++; break;
+            }
+            switch (c.Nature)
+            {
+                case Citizen.NATURE.ACTIVE: activeNatureCitizensCount++; break;
+                case Citizen.NATURE.CALM: calmNatureCitizensCount++; break;
+                case Citizen.NATURE.DREAMER: dreamerNatureCitizensCount++; break;
+                case Citizen.NATURE.SOCIAL: socialNatureCitizensCount++; break;
+            }
+            switch (c.GetTimeManagement())
+            {
+                case Citizen.TIME_MANAGEMENT.CALMED: calmedTimeManagementCitizensCount++; break;
+                case Citizen.TIME_MANAGEMENT.NORMAL: normalTimeManagementCitizensCount++; break;
+                case Citizen.TIME_MANAGEMENT.RUSHED: rushedTimeManagementCitizensCount++; break;
+            }
+            switch (c.GetMoneyManagement())
+            {
+                case Citizen.MONEY_MANAGEMENT.STINGY: stingyMoneyManagementCitizensCount++; break;
+                case Citizen.MONEY_MANAGEMENT.RESPONSIBLE: responsibleMoneyManagementCitizensCount++; break;
+                case Citizen.MONEY_MANAGEMENT.WASTEFUL: wastefulMoneyManagementCitizensCount++; break;
+            }
         }
         GlobalHealth.Value = healthValueSum / citizensCount;
         GlobalHappiness.Value = happinessValueSum / citizensCount;
         CitizensCount = citizensCount;
+
+        lowClassCitizens = lowClassCitizensCount;
+        LowClassProportion.Value = lowClassCitizens / CitizensCount;
+        middleClassCitizens = middleClassCitizensCount;
+        MiddleClassProportion.Value = middleClassCitizens / CitizensCount;
+        highClassCitizens = highClassCitizensCount;
+        HighClassProportion.Value = highClassCitizens / CitizensCount;
+
+        noneEnvriomentalCommitmentCitizens = noneEnvriomentalCommitmentCitizensCount;
+        someEnviromentalCommitmentCitizens = someEnviromentalCommitmentCitizensCount;
+        fullEnviromentalCommitmentCitizens = fullEnviromentalCommitmentCitizensCount;
+
+        activeNatureCitizens = activeNatureCitizensCount;
+        calmNatureCitizens = calmNatureCitizensCount;
+        dreamerNatureCitizens = dreamerNatureCitizensCount;
+        socialNatureCitizens = socialNatureCitizensCount;
+
+        calmedTimeManagementCitizens = calmedTimeManagementCitizensCount;
+        normalTimeManagementCitizens = normalTimeManagementCitizensCount;
+        rushedTimeManagementCitizens = rushedTimeManagementCitizensCount;
+
+        stingyMoneyManagementCitizens = stingyMoneyManagementCitizensCount;
+        responsibleMoneyManagementCitizens = responsibleMoneyManagementCitizensCount;
+        wastefulMoneyManagementCitizens = wastefulMoneyManagementCitizensCount;
+
+        TransportSector.ProcessDay();
     }
 
     public override string ToString()

@@ -34,6 +34,7 @@ public class TransportSector
     public Transport[] Transports { get; private set; }
     public ConditionableIndex Investment { get; private set; }
     public ConditionableIndex Technology { get; private set; }
+    public RepresentativeIndex SectorPollution { get; private set; }
 
     //////////////////
     // Constructors //
@@ -46,6 +47,8 @@ public class TransportSector
             + Global.Names.cityPart[(int)cityPlace], technologyValue);
         Investment = new ConditionableIndex("Inversión", "Nivel de inversión dirigida a los transportes en el barrio "
             + Global.Names.cityPart[(int)cityPlace], investmentValue);
+        SectorPollution = new RepresentativeIndex("Contaminación del sector", "Nivel de contaminación producida por los transportes en el barrio "
+            + Global.Names.cityPart[(int)cityPlace], 0.5f);
 
         transportsCount = Enum.GetNames(typeof(Transport.TYPE)).Length;
         Transports = new Transport[transportsCount];
@@ -78,8 +81,10 @@ public class TransportSector
     {
         TransportPlan fastest = new TransportPlan(Transport.TYPE.NONE, -1, -1);
         float speedValueMax = 0f;
+        int iteration = 0;
         foreach (Transport t in Transports)
         {
+            if (iteration++ < 1) continue;
             int timeRequiered = GetTravelTime(distance, t);
             if (t.Speed > speedValueMax
                 && freeSpaces[(int)t.TransportType] > 0
@@ -99,8 +104,10 @@ public class TransportSector
     {
         TransportPlan safest = new TransportPlan(Transport.TYPE.NONE, -1, -1);
         float safestValue = 0f;
+        int iteration = 0;
         foreach (Transport t in Transports)
         {
+            if (iteration++ < 1) continue;
             int timeRequiered = GetTravelTime(distance, t);
             if (t.Safety.Value > safestValue
                 && freeSpaces[(int)t.TransportType] > 0
@@ -120,8 +127,10 @@ public class TransportSector
     {
         TransportPlan leastPolluting = new TransportPlan(Transport.TYPE.NONE, -1, -1);
         float pollutionValue = 1f;
+        int iteration = 0;
         foreach (Transport t in Transports)
-        { 
+        {
+            if (iteration++ < 1) continue;
             int timeRequiered = GetTravelTime(distance, t);
             if (t.Safety.Value < pollutionValue
                 && freeSpaces[(int)t.TransportType] > 0
@@ -142,6 +151,18 @@ public class TransportSector
         freeSpaces[0] = 0;
         for (int i = 1; i < transportsCount; i++)
             freeSpaces[i] = Transports[i].Capacity;
+    }
+
+    public void ProcessDay()
+    {
+        float pollutionVal = 0f;
+        int iteration = 0;
+        foreach (Transport t in Transports)
+        {
+            if (iteration++ < 1) continue;
+            pollutionVal += t.Polluting.Value;
+        }
+        SectorPollution.Value = pollutionVal / iteration;
     }
 
     public override string ToString()

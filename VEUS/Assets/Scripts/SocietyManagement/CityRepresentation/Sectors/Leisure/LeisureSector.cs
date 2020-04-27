@@ -71,8 +71,10 @@ public class LeisureSector
     public LeisurePlan GetMostSatisfyingPlan(Citizen.NATURE nature, int currentHour, int limitHour)
     {
         LeisurePlan mostSatisfying = GetNullPlan();
+        int iteration = 0;
         foreach (Leisure l in LeisureVenues)
         {
+            if (iteration++ < 1) continue;
             if (limitHour < currentHour) limitHour += 24;
             int closing = l.Schedule.Closing, openinng = l.Schedule.Opening;
             if (closing < openinng) closing += 24;
@@ -102,8 +104,10 @@ public class LeisureSector
     public LeisurePlan GetCheapestPlan(Citizen.NATURE nature, int currentHour, int limitHour)
     {
         LeisurePlan cheapest = GetNullPlan();
+        int iteration = 0;
         foreach (Leisure l in LeisureVenues)
         {
+            if (iteration++ < 1) continue;
             if (limitHour < currentHour) limitHour += 24;
             int closing = l.Schedule.Closing, openinng = l.Schedule.Opening;
             if (closing < openinng) closing += 24;
